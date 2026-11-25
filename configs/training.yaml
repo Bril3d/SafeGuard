@@ -1,0 +1,134 @@
+# SafeGuard Experiment Matrix & Training Configurations
+# Never hardcode class names/counts here; training reads processed YOLO YAMLs
+# derived from configs/class_mapping.yaml.
+
+defaults:
+  imgsz: 640
+  batch_size: 16
+  epochs: 50
+  optimizer: "AdamW"
+  lr0: 0.002
+  lrf: 0.01
+  weight_decay: 0.0005
+  seed: 42
+  device: "0"
+  workers: 4
+  amp: true
+  patience: 15
+  conf: 0.25
+  iou: 0.50
+  mlflow_experiment: "SafeGuard-PPE-Detection"
+  class_mapping_path: "configs/class_mapping.yaml"
+  locked_test_sets:
+    roboflow_test: "data/processed/test_roboflow.yaml"
+    ultralytics_test: "data/processed/test_ultralytics.yaml"
+
+augmentations:
+  baseline:
+    hsv_h: 0.015
+    hsv_s: 0.7
+    hsv_v: 0.4
+    degrees: 0.0
+    translate: 0.1
+    scale: 0.5
+    fliplr: 0.5
+    flipud: 0.0
+    mosaic: 1.0
+    mixup: 0.0
+  controlled_tuned:
+    hsv_h: 0.015
+    hsv_s: 0.6
+    hsv_v: 0.4
+    degrees: 5.0
+    translate: 0.1
+    scale: 0.5
+    fliplr: 0.5
+    flipud: 0.0
+    mosaic: 0.8
+    mixup: 0.1
+
+experiments:
+  SMOKE:
+    description: "Fast 2-epoch pipeline verification on merged dataset (YOLO11n)"
+    model_weights: "yolo11n.pt"
+    architecture: "YOLO11n"
+    data_yaml: "data/processed/merged.yaml"
+    dataset_scope: "merged"
+    epochs: 2
+    batch_size: 16
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]
+
+  EXP-A:
+    description: "Source-B baseline: Ultralytics eligible intersection, YOLO11n"
+    model_weights: "yolo11n.pt"
+    architecture: "YOLO11n"
+    data_yaml: "data/processed/ultralytics_only.yaml"
+    dataset_scope: "ultralytics_only"
+    epochs: 50
+    batch_size: 16
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["ultralytics_test", "roboflow_test"]
+
+  EXP-B:
+    description: "Source-A baseline: Roboflow eligible intersection, YOLO11n"
+    model_weights: "yolo11n.pt"
+    architecture: "YOLO11n"
+    data_yaml: "data/processed/roboflow_only.yaml"
+    dataset_scope: "roboflow_only"
+    epochs: 50
+    batch_size: 16
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]
+
+  EXP-C:
+    description: "Harmonized merged dataset, YOLO11n"
+    model_weights: "yolo11n.pt"
+    architecture: "YOLO11n"
+    data_yaml: "data/processed/merged.yaml"
+    dataset_scope: "merged"
+    epochs: 50
+    batch_size: 16
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]
+
+  EXP-D:
+    description: "Harmonized merged dataset, YOLO11s capacity/latency trade-off"
+    model_weights: "yolo11s.pt"
+    architecture: "YOLO11s"
+    data_yaml: "data/processed/merged.yaml"
+    dataset_scope: "merged"
+    epochs: 50
+    batch_size: 12
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]
+
+  EXP-E:
+    description: "Best candidate with controlled augmentation & hyperparameter tuning"
+    model_weights: "yolo11s.pt"
+    architecture: "YOLO11s"
+    data_yaml: "data/processed/merged.yaml"
+    dataset_scope: "merged"
+    epochs: 60
+    batch_size: 12
+    imgsz: 640
+    lr0: 0.0015
+    augmentation_preset: "controlled_tuned"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]
+
+  EXP-F:
+    description: "Cross-generation architecture comparison: YOLOv8n on merged"
+    model_weights: "yolov8n.pt"
+    architecture: "YOLOv8n"
+    data_yaml: "data/processed/merged.yaml"
+    dataset_scope: "merged"
+    epochs: 50
+    batch_size: 16
+    imgsz: 640
+    augmentation_preset: "baseline"
+    applicable_tests: ["roboflow_test", "ultralytics_test"]

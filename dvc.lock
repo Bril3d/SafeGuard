@@ -123,8 +123,8 @@ stages:
       size: 2009740
     - path: src/data/split_dataset.py
       hash: md5
-      md5: 999c600736951e89af1261ed6c8f09b3
-      size: 9219
+      md5: ecca11b27964a6882d947912f4d9d5c9
+      size: 9298
     params:
       params.yaml:
         data_pipeline.random_seed: 42
@@ -149,8 +149,8 @@ stages:
       nfiles: 164
     - path: data/processed/test_roboflow.yaml
       hash: md5
-      md5: 0d43ae45e69880a1bd331312d084df53
-      size: 175
+      md5: 6d94401f6a25772a7cf67dfd39946d52
+      size: 204
     - path: data/processed/test_ultralytics
       hash: md5
       md5: 5726d5016f910b202e0d4aec4fe3dc93.dir
@@ -158,8 +158,8 @@ stages:
       nfiles: 240
     - path: data/processed/test_ultralytics.yaml
       hash: md5
-      md5: e60afa26a34a45954fbeb8b45a144fc9
-      size: 181
+      md5: 8ae2c7c9d83963c0dc1691d3980ba04f
+      size: 213
     - path: data/processed/train_roboflow
       hash: md5
       md5: 6f3d9acc70a81dea6b0093ba070a2581.dir
@@ -214,3 +214,57 @@ stages:
       hash: md5
       md5: 4560cd5866f0d160e230b6b00f4d8a83
       size: 4895
+  train:
+    cmd: python -m src.models.train --config configs/training.yaml --params 
+      params.yaml --output reports/experiments/active_train_summary.json
+    deps:
+    - path: configs/class_mapping.yaml
+      hash: md5
+      md5: 0f908ec5bfe3d613737e0c8ea9236620
+      size: 5105
+    - path: configs/training.yaml
+      hash: md5
+      md5: 102ff676f83b482e2922672463999152
+      size: 3615
+    - path: data/processed/split_manifest.json
+      hash: md5
+      md5: 7d66b4f0ff8e514b5a87c8811f8c79af
+      size: 866875
+    - path: src/models/train.py
+      hash: md5
+      md5: b3d5b8d282d8df7466006e9cce40c8ae
+      size: 14020
+    params:
+      params.yaml:
+        training.active_experiment: SMOKE
+        training.batch_size_override:
+        training.epochs_override:
+        training.imgsz_override:
+        training.seed_override:
+    outs:
+    - path: reports/experiments/active_train_summary.json
+      hash: md5
+      md5: 7cb637ed36e711553af1bf4474808406
+      size: 1237
+  evaluate:
+    cmd: python -m src.models.evaluate --train-summary 
+      reports/experiments/active_train_summary.json --params params.yaml 
+      --output reports/experiments/active_eval_summary.json
+    deps:
+    - path: reports/experiments/active_train_summary.json
+      hash: md5
+      md5: 7cb637ed36e711553af1bf4474808406
+      size: 1237
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: f1ec6208a41a9eaf6287fa64afe95798
+      size: 5760
+    params:
+      params.yaml:
+        training.conf_threshold: 0.25
+        training.iou_threshold: 0.5
+    outs:
+    - path: reports/experiments/active_eval_summary.json
+      hash: md5
+      md5: 1d809c4ceb9ade6d1107e858bb46c7cf
+      size: 2600

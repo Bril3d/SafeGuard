@@ -6,3 +6,13 @@ data_pipeline:
   ultralytics_holdout_ratio: 0.15
   random_seed: 42
   keep_empty_labels_after_harmonization: true
+
+training:
+  active_experiment: "SMOKE"
+  epochs_override: null
+  batch_size_override: null
+  imgsz_override: null
+  seed_override: null
+  conf_threshold: 0.25
+  iou_threshold: 0.50
+  mlflow_tracking_uri: "sqlite:///mlflow.db"

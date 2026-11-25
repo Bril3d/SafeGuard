@@ -181,14 +181,16 @@ def split_from_manifest(
         processed_dir / "test_roboflow.yaml",
         processed_dir,
         canonical_names,
-        val="test_roboflow/images",
+        train="train_roboflow/images",
+        val="val_roboflow/images",
         test="test_roboflow/images",
     )
     _write_yolo_yaml(
         processed_dir / "test_ultralytics.yaml",
         processed_dir,
         canonical_names,
-        val="test_ultralytics/images",
+        train="train_ultralytics/images",
+        val="val_ultralytics/images",
         test="test_ultralytics/images",
     )
 

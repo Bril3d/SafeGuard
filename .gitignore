@@ -44,6 +44,7 @@ models/*
 mlruns/
 mlartifacts/
 mlflow.db
+runs/
 
 # Frontend Node.js
 frontend/node_modules/
@@ -101,6 +102,7 @@ models/*
 mlruns/
 mlartifacts/
 mlflow.db
+runs/
 
 # Frontend Node.js
 frontend/node_modules/

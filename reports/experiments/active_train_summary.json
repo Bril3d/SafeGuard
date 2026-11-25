@@ -1,0 +1,36 @@
+{
+  "experiment_id": "SMOKE",
+  "run_name": "SMOKE_seed42",
+  "mlflow_run_id": "92f76eabd79b4961a5874f80e10a0f57",
+  "mlflow_tracking_uri": "sqlite:///mlflow.db",
+  "architecture": "YOLO11n",
+  "model_weights": "yolo11n.pt",
+  "data_yaml": "data/processed/merged.yaml",
+  "dataset_scope": "merged",
+  "epochs": 2,
+  "batch_size": 16,
+  "imgsz": 640,
+  "seed": 42,
+  "gpu_device": "NVIDIA GeForce RTX 5070 Laptop GPU",
+  "checkpoint_path": "models\\candidates\\SMOKE\\SMOKE_seed42_best.pt",
+  "checkpoint_sha256": "ff9a533b5055b14d76fa31f8661c3b74269378354d4e5f00c21364a3ec65446d",
+  "save_dir": "C:\\dev\\SafeGuard\\runs\\detect\\runs\\train\\SMOKE_seed42",
+  "metrics": {
+    "val_precision": 0.6543811237334801,
+    "val_recall": 0.4968220325148204,
+    "val_mAP50": 0.5823616081027277,
+    "val_mAP50_95": 0.3717344090461839,
+    "fitness": 0.3717344090461839,
+    "training_duration_sec": 184.33,
+    "peak_gpu_allocated_mb": 2243.35,
+    "peak_gpu_reserved_mb": 3030.0
+  },
+  "applicable_tests": [
+    "roboflow_test",
+    "ultralytics_test"
+  ],
+  "locked_test_sets": {
+    "roboflow_test": "data/processed/test_roboflow.yaml",
+    "ultralytics_test": "data/processed/test_ultralytics.yaml"
+  }
+}

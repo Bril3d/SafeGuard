@@ -91,3 +91,32 @@ stages:
           cache: false
       - reports/dataset/final_split_distribution.png:
           cache: false
+
+  train:
+    cmd: python -m src.models.train --config configs/training.yaml --params params.yaml --output reports/experiments/active_train_summary.json
+    deps:
+      - configs/training.yaml
+      - configs/class_mapping.yaml
+      - data/processed/split_manifest.json
+      - src/models/train.py
+    params:
+      - training.active_experiment
+      - training.epochs_override
+      - training.batch_size_override
+      - training.imgsz_override
+      - training.seed_override
+    outs:
+      - reports/experiments/active_train_summary.json:
+          cache: false
+
+  evaluate:
+    cmd: python -m src.models.evaluate --train-summary reports/experiments/active_train_summary.json --params params.yaml --output reports/experiments/active_eval_summary.json
+    deps:
+      - reports/experiments/active_train_summary.json
+      - src/models/evaluate.py
+    params:
+      - training.conf_threshold
+      - training.iou_threshold
+    outs:
+      - reports/experiments/active_eval_summary.json:
+          cache: false
