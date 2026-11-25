@@ -1,0 +1,98 @@
+{
+  "weights_path": "models\\candidates\\EXP-F\\EXP-F_seed42_best.pt",
+  "images_analyzed": 120,
+  "conf_threshold": 0.25,
+  "iou_threshold": 0.5,
+  "totals": {
+    "tp": 846,
+    "fp": 59,
+    "fn": 132,
+    "small_object_fn": 129
+  },
+  "per_class_fp": {
+    "0": 10,
+    "1": 14,
+    "2": 7,
+    "3": 16,
+    "4": 12
+  },
+  "per_class_fn": {
+    "0": 13,
+    "1": 35,
+    "2": 16,
+    "3": 30,
+    "4": 38
+  },
+  "worst_images_top10": [
+    {
+      "image": "ultralytics_ppe__train__16413868bdb5.jpg",
+      "tp": 16,
+      "fp": 1,
+      "fn": 12,
+      "small_object_fn": 12
+    },
+    {
+      "image": "ultralytics_ppe__train__5a45b2aa50a9.jpg",
+      "tp": 7,
+      "fp": 2,
+      "fn": 9,
+      "small_object_fn": 9
+    },
+    {
+      "image": "ultralytics_ppe__train__6f187c7724da.jpg",
+      "tp": 8,
+      "fp": 6,
+      "fn": 4,
+      "small_object_fn": 4
+    },
+    {
+      "image": "ultralytics_ppe__train__f90e6e34cf7c.jpg",
+      "tp": 15,
+      "fp": 1,
+      "fn": 7,
+      "small_object_fn": 7
+    },
+    {
+      "image": "ultralytics_ppe__train__818b675f6f3f.jpg",
+      "tp": 4,
+      "fp": 2,
+      "fn": 5,
+      "small_object_fn": 5
+    },
+    {
+      "image": "ultralytics_ppe__train__81e61cc0d681.jpg",
+      "tp": 12,
+      "fp": 0,
+      "fn": 7,
+      "small_object_fn": 7
+    },
+    {
+      "image": "ultralytics_ppe__train__3b057f416e2d.jpg",
+      "tp": 14,
+      "fp": 3,
+      "fn": 3,
+      "small_object_fn": 3
+    },
+    {
+      "image": "ultralytics_ppe__train__3cf4fd515973.jpg",
+      "tp": 12,
+      "fp": 2,
+      "fn": 4,
+      "small_object_fn": 4
+    },
+    {
+      "image": "ultralytics_ppe__train__662d254b6a36.jpg",
+      "tp": 12,
+      "fp": 1,
+      "fn": 5,
+      "small_object_fn": 5
+    },
+    {
+      "image": "ultralytics_ppe__train__8d45eea57d96.jpg",
+      "tp": 8,
+      "fp": 2,
+      "fn": 4,
+      "small_object_fn": 4
+    }
+  ]
+}
