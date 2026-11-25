@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass, field
+import json
 import math
 from pathlib import Path
 from typing import Any
 
 from PIL import Image, UnidentifiedImageError
 
-from src.data.inspect_dataset import DatasetRecord, get_split_directories
+from src.data.inspect_dataset import (
+    DatasetRecord,
+    discover_dataset_records,
+    get_split_directories,
+)
 
 
 @dataclass
@@ -143,3 +149,71 @@ def validate_dataset(
                 report.valid_box_count += 1
 
     return report
+
+
+def validate_from_manifest(
+    ingest_manifest_path: Path,
+    output_report_path: Path,
+) -> dict[str, Any]:
+    """Validate all ingested sources and emit a machine-readable validation report."""
+    ingest = json.loads(ingest_manifest_path.read_text(encoding="utf-8"))
+    source_reports: dict[str, Any] = {}
+    total_corrupt = 0
+    total_invalid_boxes = 0
+
+    for source_key, src_meta in ingest["sources"].items():
+        root_dir = Path(src_meta["root_dir"])
+        layout = str(src_meta["layout"])
+        valid_ids = {int(k) for k in src_meta["names"].keys()}
+        records = discover_dataset_records(source_key, root_dir, layout)
+        rep = validate_dataset(source_key, root_dir, layout, records, valid_ids)
+
+        total_corrupt += len(rep.corrupted_images)
+        total_invalid_boxes += rep.invalid_box_count
+        source_reports[source_key] = {
+            "total_images": rep.total_images,
+            "total_label_files": rep.total_label_files,
+            "missing_labels": rep.missing_labels,
+            "orphan_labels": rep.orphan_labels,
+            "corrupted_images": rep.corrupted_images,
+            "empty_label_files": rep.empty_label_files,
+            "valid_box_count": rep.valid_box_count,
+            "invalid_box_count": rep.invalid_box_count,
+            "invalid_boxes": rep.invalid_boxes,
+        }
+
+    summary = {
+        "stage": "validate",
+        "ingest_manifest_path": str(ingest_manifest_path),
+        "total_corrupted_images": total_corrupt,
+        "total_invalid_boxes": total_invalid_boxes,
+        "sources": source_reports,
+    }
+    output_report_path.parent.mkdir(parents=True, exist_ok=True)
+    output_report_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+
+    if total_corrupt > 0 or total_invalid_boxes > 0:
+        raise RuntimeError(
+            f"Validation failed: {total_corrupt} corrupt images, "
+            f"{total_invalid_boxes} invalid boxes"
+        )
+    return summary
+
+
+def main() -> None:
+    """CLI entrypoint for DVC validate stage."""
+    parser = argparse.ArgumentParser(description="SafeGuard DVC validate stage.")
+    parser.add_argument(
+        "--ingest-manifest",
+        type=Path,
+        default=Path("data/interim/ingest_manifest.json"),
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("data/interim/validation_report.json")
+    )
+    args = parser.parse_args()
+    validate_from_manifest(args.ingest_manifest, args.output)
+
+
+if __name__ == "__main__":
+    main()

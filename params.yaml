@@ -1,0 +1,8 @@
+# SafeGuard Reproducible Pipeline Parameters
+
+data_pipeline:
+  phash_threshold: 6
+  enable_scene_grouping: true
+  ultralytics_holdout_ratio: 0.15
+  random_seed: 42
+  keep_empty_labels_after_harmonization: true

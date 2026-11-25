@@ -1,0 +1,706 @@
+{
+  "total_input_images": 1717,
+  "total_kept": 1640,
+  "total_dropped": 77,
+  "dropped_by_decision": {
+    "drop_scene_group_test_leakage": 26,
+    "drop_test_leakage": 13,
+    "drop_val_leakage": 18,
+    "drop_within_split_duplicate": 20
+  },
+  "dropped_records": [
+    {
+      "unique_id": "roboflow_v30__train__c09b5a7c74c8",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\588_jpg.rf.da50ac0812843e85c23592fa3937b8d3.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_65",
+      "kept_representative": "roboflow_v30__valid__6cde6900e145"
+    },
+    {
+      "unique_id": "roboflow_v30__train__62baa326021a",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\616_jpg.rf.1bcf574b89339f2321e4348310370519.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_65",
+      "kept_representative": "roboflow_v30__valid__6cde6900e145"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a01e6c686b73",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\627_jpg.rf.dcaebe5c7f46e4059f46eb018d571997.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_65",
+      "kept_representative": "roboflow_v30__valid__6cde6900e145"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__9a9510b66ffb",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\518_jpg.rf.e64b45e3dad449aa09d01987fad46228.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__valid__6cde6900e145",
+      "kept_representative": "roboflow_v30__valid__6cde6900e145"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__e14ec7b3441e",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\644_jpg.rf.7807631d41054ae9b52df33f1c29c85b.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__valid__6cde6900e145",
+      "kept_representative": "roboflow_v30__valid__6cde6900e145"
+    },
+    {
+      "unique_id": "roboflow_v30__train__372c6215e391",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\autox4_mp4-42_jpg.rf.863cf14a34c3f80d00878d2c0a35b04c.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_89",
+      "kept_representative": "roboflow_v30__valid__98309b1194bf"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a24f0adce067",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-4-_mp4-188_jpg.rf.036e7cb2040ef16a63e8f8966347fc15.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__25edba56c4c6",
+      "kept_representative": "roboflow_v30__train__25edba56c4c6"
+    },
+    {
+      "unique_id": "roboflow_v30__train__987bbda71972",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\image_23_jpg.rf.fea0ac5f2cfad839cb8423d8c852276d.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__5f2d0454506c",
+      "kept_representative": "roboflow_v30__train__5f2d0454506c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__9785048202d5",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_MOV-30_jpg.rf.9dfc49e338e921c31fc6a46ff914fefc.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__2ee2b4607c9c",
+      "kept_representative": "roboflow_v30__train__2ee2b4607c9c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__abe06afa034f",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-14_jpg.rf.d03f4e2ddea690cb480d8c186a49a134.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__2ee2b4607c9c",
+      "kept_representative": "roboflow_v30__train__2ee2b4607c9c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__78796a518860",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-9_jpg.rf.c0364e60cd923fe7413a216f435d5c9a.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__2ee2b4607c9c",
+      "kept_representative": "roboflow_v30__train__2ee2b4607c9c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__80f29cf36ca4",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-1_jpg.rf.634afaf9876aeefa00addf622f678b7f.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__64e2cef87703",
+      "kept_representative": "roboflow_v30__train__64e2cef87703"
+    },
+    {
+      "unique_id": "roboflow_v30__train__beab54be5053",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-10_jpg.rf.037c01f051a10c91a1a83784ee766e12.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_297",
+      "kept_representative": "roboflow_v30__test__cac786f2970d"
+    },
+    {
+      "unique_id": "roboflow_v30__train__78a9ce1d5458",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-21_jpg.rf.6720daa3a09b0c369777148e1a48d99b.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__56fd1cecd417",
+      "kept_representative": "roboflow_v30__train__56fd1cecd417"
+    },
+    {
+      "unique_id": "roboflow_v30__train__1b11b8939b84",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-23_jpg.rf.a5507e70e716b2c894c3bfa42c061112.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_303",
+      "kept_representative": "roboflow_v30__test__15486d596928"
+    },
+    {
+      "unique_id": "roboflow_v30__train__6258aa717fed",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-10_jpg.rf.4477271ef0647c38b45c2c6ea4c30125.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_318",
+      "kept_representative": "roboflow_v30__test__4b7a1062e524"
+    },
+    {
+      "unique_id": "roboflow_v30__train__e0fa28d1954b",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-17_jpg.rf.640170b6a0f2eeac5f69dd46ebbe2e00.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_575",
+      "kept_representative": "roboflow_v30__valid__88ddc0ecfe1c"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__ab86871b990a",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\IMG_3103_mp4-16_jpg.rf.202543978ece0ba1ffca2af94ad2626a.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__valid__88ddc0ecfe1c",
+      "kept_representative": "roboflow_v30__valid__88ddc0ecfe1c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__5f197319efd1",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\Movie-on-10-31-22-at-10_08-AM_mov-0_jpg.rf.0b27eadad4a69b5d54cb3e07b8bd9ab2.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__train__759d2424788e",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\Movie-on-10-31-22-at-10_08-AM_mov-27_jpg.rf.7afac3cc961a98d7748041601aa9ec10.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a2ffc1a35187",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\Movie-on-10-31-22-at-10_08-AM_mov-5_jpg.rf.cf48c1bf2079f3b65db66fb64d925a20.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__train__b405db169e07",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\Movie-on-10-31-22-at-10_08-AM_mov-9_jpg.rf.119ca185f9308d54f18a782d5ab173fc.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__491a84211403",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\Movie-on-10-31-22-at-10_08-AM_mov-22_jpg.rf.548bb1e08669d67062b4b1aab277db31.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__16eb70c704ca",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\Movie-on-10-31-22-at-10_08-AM_mov-6_jpg.rf.d6c12e2df8c51288bf878a23552cebf7.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_354",
+      "kept_representative": "roboflow_v30__test__50b54dac0d65"
+    },
+    {
+      "unique_id": "roboflow_v30__train__4a27497a9caf",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\Movie-on-10-31-22-at-10_08-AM_mov-13_jpg.rf.29b7ccf47b767bec8810af72c403f254.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_356",
+      "kept_representative": "roboflow_v30__valid__f709a8971d38"
+    },
+    {
+      "unique_id": "roboflow_v30__train__e5a277b4e9e1",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-196_jpg.rf.bafe92276b19be5b47052e15243ef373.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_400",
+      "kept_representative": "roboflow_v30__valid__760ecd49f7ba"
+    },
+    {
+      "unique_id": "roboflow_v30__train__b5e07439a94d",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-209_jpg.rf.bb29c55f4e8dba4f499e063a83c7dd38.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_404",
+      "kept_representative": "roboflow_v30__test__5925a0fe6143"
+    },
+    {
+      "unique_id": "roboflow_v30__train__e86256096225",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-29_jpg.rf.b51c9d8e51c019c7aa016827710fd482.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__9637cd707931",
+      "kept_representative": "roboflow_v30__train__9637cd707931"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a1966992fb25",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-252_jpg.rf.f3cce55f513485ab84b7692d7a8be41a.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_417",
+      "kept_representative": "roboflow_v30__test__8b92337e9c2f"
+    },
+    {
+      "unique_id": "roboflow_v30__train__ea0c9a4be59f",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-254_jpg.rf.260448d7fa878d653110619bd02501e6.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_417",
+      "kept_representative": "roboflow_v30__test__8b92337e9c2f"
+    },
+    {
+      "unique_id": "roboflow_v30__train__ef994bac4157",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-260_jpg.rf.cdb7f4f994ee73b0df7c9cd54d0af513.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_420",
+      "kept_representative": "roboflow_v30__valid__6ad3a81b0588"
+    },
+    {
+      "unique_id": "roboflow_v30__train__019d126dbb7c",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-276_jpg.rf.7266f6f2d89a611eca7c90acab9b9015.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_425",
+      "kept_representative": "roboflow_v30__valid__7b538647ce4f"
+    },
+    {
+      "unique_id": "roboflow_v30__train__7838b3b4b160",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-360_jpg.rf.01f7e95855485f658d69ebb33fd4ecd9.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__1da40673744b",
+      "kept_representative": "roboflow_v30__train__1da40673744b"
+    },
+    {
+      "unique_id": "roboflow_v30__train__7e1bd7dc1e73",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-362_jpg.rf.8d8a94a15e37ae8c0eb132c026a8d3c1.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__1da40673744b",
+      "kept_representative": "roboflow_v30__train__1da40673744b"
+    },
+    {
+      "unique_id": "roboflow_v30__train__68244dce3b0f",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-395_jpg.rf.7023fe0269732ed2c49c97c50cf9dd40.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_441",
+      "kept_representative": "roboflow_v30__valid__74857c381f33"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__f4e6398e8da2",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\youtube-392_jpg.rf.7ae8ad40bc5ce3b8b6f4354898cb9455.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__valid__74857c381f33",
+      "kept_representative": "roboflow_v30__valid__74857c381f33"
+    },
+    {
+      "unique_id": "roboflow_v30__train__fa799bb39260",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-448_jpg.rf.6ddd9851ff8edb89c913eacab2581b3a.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_448",
+      "kept_representative": "roboflow_v30__valid__03c2d9dcbc6b"
+    },
+    {
+      "unique_id": "roboflow_v30__train__f89dbb2df304",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-486_jpg.rf.508460f72a7ec8c42d592136121df569.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_456",
+      "kept_representative": "roboflow_v30__valid__a530de318fa1"
+    },
+    {
+      "unique_id": "roboflow_v30__train__8b4b71d77f32",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-502_jpg.rf.6020702ff6042f9bd0bb080e4565480b.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_461",
+      "kept_representative": "roboflow_v30__valid__313822b14385"
+    },
+    {
+      "unique_id": "roboflow_v30__train__7653c4023932",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-507_jpg.rf.8259463d335b62243195fde04e7726b4.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__3bcb10f4dc1c",
+      "kept_representative": "roboflow_v30__train__3bcb10f4dc1c"
+    },
+    {
+      "unique_id": "roboflow_v30__train__89cf9fc03d2e",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-574_jpg.rf.03f4ac2e50176833d4dbf4587ccf59bc.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__767d80847cd5",
+      "kept_representative": "roboflow_v30__train__767d80847cd5"
+    },
+    {
+      "unique_id": "roboflow_v30__train__b382e48781f3",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-589_jpg.rf.a0bacd283639a5092f7779ea52b1c1b8.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_481",
+      "kept_representative": "roboflow_v30__valid__d8772d9241dc"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a268bda7fe5c",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-60_jpg.rf.d43be972b5b743ff9340c08eb59aa4b5.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__978c72546c31",
+      "kept_representative": "roboflow_v30__train__978c72546c31"
+    },
+    {
+      "unique_id": "roboflow_v30__train__88fc609c7c9a",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-618_jpg.rf.5f31ec175483e893ef20d42a70a54dd1.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_484",
+      "kept_representative": "roboflow_v30__valid__11ad451161a4"
+    },
+    {
+      "unique_id": "roboflow_v30__valid__8454e301bbc4",
+      "source": "roboflow_v30",
+      "original_split": "valid",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\valid\\images\\youtube-619_jpg.rf.acaa28bf8879aa2ebc6330470d4eef72.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__valid__11ad451161a4",
+      "kept_representative": "roboflow_v30__valid__11ad451161a4"
+    },
+    {
+      "unique_id": "roboflow_v30__train__76d39ef72905",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-667_jpg.rf.a5ea08e057c86b8adbbe9c541e94b59d.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__464e6a9b0e7f",
+      "kept_representative": "roboflow_v30__train__464e6a9b0e7f"
+    },
+    {
+      "unique_id": "roboflow_v30__train__de9d6608f8e7",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-668_jpg.rf.601bec40247f9445380b25489178cdce.jpg",
+      "decision": "drop_within_split_duplicate",
+      "reason": "redundant_near_duplicate_of_roboflow_v30__train__464e6a9b0e7f",
+      "kept_representative": "roboflow_v30__train__464e6a9b0e7f"
+    },
+    {
+      "unique_id": "roboflow_v30__train__61f74f88f4b1",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-726_jpg.rf.07714729700f56411425907ceac9172e.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_504",
+      "kept_representative": "roboflow_v30__valid__9bf51b80e4e2"
+    },
+    {
+      "unique_id": "roboflow_v30__train__7709385d6a85",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-837_jpg.rf.f933cf9c5b394d514ebb2685011887fd.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_515",
+      "kept_representative": "roboflow_v30__valid__205d0f631815"
+    },
+    {
+      "unique_id": "roboflow_v30__train__67976d1f3d2e",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\youtube-849_jpg.rf.58e99890e7585690835ff2d91e4df2e7.jpg",
+      "decision": "drop_test_leakage",
+      "reason": "duplicate_of_locked_test_in_cluster_517",
+      "kept_representative": "roboflow_v30__test__7b1b738fd309"
+    },
+    {
+      "unique_id": "ultralytics_ppe__train__188bbd722904",
+      "source": "ultralytics_ppe",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\ultralytics\\construction-ppe\\images\\train\\source-efc23273c04e007083114c0f217335f0.jpg",
+      "decision": "drop_val_leakage",
+      "reason": "duplicate_of_validation_image_in_cluster_939",
+      "kept_representative": "ultralytics_ppe__val__cc8c7ab84615"
+    },
+    {
+      "unique_id": "roboflow_v30__train__fc3b586f4721",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-113_jpg.rf.a0b64593e035d37e9619556a5a39e492.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__e1733b76562a",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-12_jpg.rf.f43f80b7a098e0ccd438bb5193d5b0bb.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__2153d14aadb5",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-15_jpg.rf.11618ce304c110212e25c4c80128d640.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__328db25ed8d4",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-178_jpg.rf.9bda568d806072e7ca04d7b50d1483c9.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__0cbaada130c8",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-210_jpg.rf.bef16a153dae2290c2b50c8fea928cae.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__88c353adbb90",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-213_jpg.rf.dfb6eeb8f26fefbe908279108851a055.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__502a810faf70",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\construction-2-_mp4-219_jpg.rf.af4db0c3872cad6e11e9f13d8ca8cc21.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0123_with_locked_test",
+      "kept_representative": "sg_0123"
+    },
+    {
+      "unique_id": "roboflow_v30__train__8669bebfbddc",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_MOV-39_jpg.rf.9013bcce27be6b356fa3579d13b2b05e.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__64e2cef87703",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-0_jpg.rf.8a60a57f69c8a17810fd45aa891612a2.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__2ee2b4607c9c",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-13_jpg.rf.15e9d9880e1db9b940b5491fdd2221b0.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__56fd1cecd417",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-20_jpg.rf.a1691991c7be8cd42d85f979a2d2218f.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__a65a3f705e0a",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-24_jpg.rf.8c824c18e634f3e6fbddabf1e5c09795.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__d936f0e7c2fa",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_0871_mp4-5_jpg.rf.c605d55b867d254ce7ee93c0bdfdd183.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0296_with_locked_test",
+      "kept_representative": "sg_0296"
+    },
+    {
+      "unique_id": "roboflow_v30__train__0847ea951678",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-0_jpg.rf.1f8fcce8b2f90e1ca03720250ecce710.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__c882700743a1",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-15_jpg.rf.5f25217a78c27110960664c8c1abb1e7.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__f278928d4c6b",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-17_jpg.rf.63e9af5bfa9d19b9f2e4ba75f8117553.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__0895580bb3bb",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-23_jpg.rf.0c4b98788dc3f1b9f180472875efdc72.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__4503e563cc2a",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-24_jpg.rf.61644c1c1d9a26cebd4774f15b612c97.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__d369b3566a22",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-25_jpg.rf.a143a7c5f4a61cea6409fba5165a95b6.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__84329bd671a2",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-2_jpg.rf.9ca1393b4feb02c480a67e6e09d3ca84.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__4dcdcb1fc85f",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-5_jpg.rf.f0648a2bcfa8f944d42cb51416a03bf4.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__00d4e3361f20",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3100_mp4-6_jpg.rf.5c3f0100b764e5f78af5f44e84f6464e.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0309_with_locked_test",
+      "kept_representative": "sg_0309"
+    },
+    {
+      "unique_id": "roboflow_v30__train__f551761e7d65",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-11_jpg.rf.29b48bd197f4554edfaecdf867317e1e.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0318_with_locked_test",
+      "kept_representative": "sg_0318"
+    },
+    {
+      "unique_id": "roboflow_v30__train__7fc4e7aeb230",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-15_jpg.rf.9c7049b22f1f65175ad54fb612f14da0.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0318_with_locked_test",
+      "kept_representative": "sg_0318"
+    },
+    {
+      "unique_id": "roboflow_v30__train__5488fed12ec1",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-1_jpg.rf.37fa69fa4b83c31b5556da948271233e.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0318_with_locked_test",
+      "kept_representative": "sg_0318"
+    },
+    {
+      "unique_id": "roboflow_v30__train__c6afea0210c8",
+      "source": "roboflow_v30",
+      "original_split": "train",
+      "original_image_path": "data\\raw\\roboflow\\construction-site-safety-v30\\train\\images\\IMG_3103_mp4-3_jpg.rf.abf417a32f98162e8a1c3cf585250dd7.jpg",
+      "decision": "drop_scene_group_test_leakage",
+      "reason": "shares_video_scene_group_sg_0318_with_locked_test",
+      "kept_representative": "sg_0318"
+    }
+  ]
+}

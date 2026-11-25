@@ -1,0 +1,93 @@
+stages:
+  ingest:
+    cmd: python -m src.data.ingest --config configs/data.yaml --output data/interim/ingest_manifest.json
+    deps:
+      - configs/data.yaml
+      - src/data/ingest.py
+      - src/data/inspect_dataset.py
+      - data/raw/roboflow/construction-site-safety-v30
+      - data/raw/ultralytics/construction-ppe
+    outs:
+      - data/interim/ingest_manifest.json
+
+  validate:
+    cmd: python -m src.data.validate_annotations --ingest-manifest data/interim/ingest_manifest.json --output data/interim/validation_report.json
+    deps:
+      - data/interim/ingest_manifest.json
+      - src/data/validate_annotations.py
+    outs:
+      - data/interim/validation_report.json
+
+  harmonize:
+    cmd: python -m src.data.harmonize_labels --ingest-manifest data/interim/ingest_manifest.json --mapping configs/class_mapping.yaml --output-dir data/interim/harmonized --output-manifest data/interim/harmonize_manifest.json
+    deps:
+      - data/interim/ingest_manifest.json
+      - data/interim/validation_report.json
+      - configs/class_mapping.yaml
+      - src/data/harmonize_labels.py
+    outs:
+      - data/interim/harmonized:
+          cache: false
+      - data/interim/harmonize_manifest.json
+
+  deduplicate:
+    cmd: python -m src.data.check_duplicates --harmonize-manifest data/interim/harmonize_manifest.json --params params.yaml --output-manifest data/interim/dedup_manifest.json --report reports/dataset/deduplication_report.json
+    deps:
+      - data/interim/harmonize_manifest.json
+      - src/data/check_duplicates.py
+    params:
+      - data_pipeline.phash_threshold
+      - data_pipeline.enable_scene_grouping
+    outs:
+      - data/interim/dedup_manifest.json
+      - reports/dataset/deduplication_report.json:
+          cache: false
+
+  split:
+    cmd: python -m src.data.split_dataset --dedup-manifest data/interim/dedup_manifest.json --mapping configs/class_mapping.yaml --params params.yaml --processed-dir data/processed
+    deps:
+      - data/interim/dedup_manifest.json
+      - configs/class_mapping.yaml
+      - src/data/split_dataset.py
+    params:
+      - data_pipeline.ultralytics_holdout_ratio
+      - data_pipeline.random_seed
+    outs:
+      - data/processed/train_roboflow:
+          cache: false
+      - data/processed/val_roboflow:
+          cache: false
+      - data/processed/test_roboflow:
+          cache: false
+      - data/processed/train_ultralytics:
+          cache: false
+      - data/processed/val_ultralytics:
+          cache: false
+      - data/processed/test_ultralytics:
+          cache: false
+      - data/processed/merged.yaml:
+          cache: false
+      - data/processed/roboflow_only.yaml:
+          cache: false
+      - data/processed/ultralytics_only.yaml:
+          cache: false
+      - data/processed/test_roboflow.yaml:
+          cache: false
+      - data/processed/test_ultralytics.yaml:
+          cache: false
+      - data/processed/split_manifest.json:
+          cache: false
+
+  statistics:
+    cmd: python -m src.data.stats --split-manifest data/processed/split_manifest.json --mapping configs/class_mapping.yaml --reports-dir reports/dataset
+    deps:
+      - data/processed/split_manifest.json
+      - configs/class_mapping.yaml
+      - src/data/stats.py
+    outs:
+      - reports/dataset/final_split_statistics.csv:
+          cache: false
+      - reports/dataset/final_split_statistics.json:
+          cache: false
+      - reports/dataset/final_split_distribution.png:
+          cache: false

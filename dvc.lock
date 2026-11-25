@@ -1,0 +1,216 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m src.data.ingest --config configs/data.yaml --output 
+      data/interim/ingest_manifest.json
+    deps:
+    - path: configs/data.yaml
+      hash: md5
+      md5: ee478d7925cba30b39164b4caa486fa8
+      size: 967
+    - path: data/raw/roboflow/construction-site-safety-v30
+      hash: md5
+      md5: 1b6cd0b1f236a873b9a6d639e2b54b44.dir
+      size: 81789679
+      nfiles: 1437
+    - path: data/raw/ultralytics/construction-ppe
+      hash: md5
+      md5: d0e8c0dc21f8e475539a83763f6546bc.dir
+      size: 647834864
+      nfiles: 2004
+    - path: src/data/ingest.py
+      hash: md5
+      md5: 4f11b44e913385236ee4123461cce9cf
+      size: 2980
+    - path: src/data/inspect_dataset.py
+      hash: md5
+      md5: f8cb5067c528693674f09d248607d905
+      size: 4241
+    outs:
+    - path: data/interim/ingest_manifest.json
+      hash: md5
+      md5: 0008e782ba57b06044a90e05d0d61b8e
+      size: 788418
+  validate:
+    cmd: python -m src.data.validate_annotations --ingest-manifest 
+      data/interim/ingest_manifest.json --output 
+      data/interim/validation_report.json
+    deps:
+    - path: data/interim/ingest_manifest.json
+      hash: md5
+      md5: 0008e782ba57b06044a90e05d0d61b8e
+      size: 788418
+    - path: src/data/validate_annotations.py
+      hash: md5
+      md5: b26dd0060d4f29defcbb6ec7437a0397
+      size: 7439
+    outs:
+    - path: data/interim/validation_report.json
+      hash: md5
+      md5: 009c17ac81dce3d9debbe59205d2fbb5
+      size: 7891
+  harmonize:
+    cmd: python -m src.data.harmonize_labels --ingest-manifest 
+      data/interim/ingest_manifest.json --mapping configs/class_mapping.yaml 
+      --output-dir data/interim/harmonized --output-manifest 
+      data/interim/harmonize_manifest.json
+    deps:
+    - path: configs/class_mapping.yaml
+      hash: md5
+      md5: 0f908ec5bfe3d613737e0c8ea9236620
+      size: 5105
+    - path: data/interim/ingest_manifest.json
+      hash: md5
+      md5: 0008e782ba57b06044a90e05d0d61b8e
+      size: 788418
+    - path: data/interim/validation_report.json
+      hash: md5
+      md5: 009c17ac81dce3d9debbe59205d2fbb5
+      size: 7891
+    - path: src/data/harmonize_labels.py
+      hash: md5
+      md5: f40a2d2115b19840804720bc813ccdf3
+      size: 7358
+    outs:
+    - path: data/interim/harmonize_manifest.json
+      hash: md5
+      md5: 90560161763d7e8e1a19951e215c1bd3
+      size: 1727689
+    - path: data/interim/harmonized
+      hash: md5
+      md5: a46aba2afb455a378b88caae3f9b764a.dir
+      size: 728988196
+      nfiles: 3434
+  deduplicate:
+    cmd: python -m src.data.check_duplicates --harmonize-manifest 
+      data/interim/harmonize_manifest.json --params params.yaml 
+      --output-manifest data/interim/dedup_manifest.json --report 
+      reports/dataset/deduplication_report.json
+    deps:
+    - path: data/interim/harmonize_manifest.json
+      hash: md5
+      md5: 90560161763d7e8e1a19951e215c1bd3
+      size: 1727689
+    - path: src/data/check_duplicates.py
+      hash: md5
+      md5: 2cb53b3715c75b18bccfe0a4b4032b76
+      size: 13293
+    params:
+      params.yaml:
+        data_pipeline.enable_scene_grouping: true
+        data_pipeline.phash_threshold: 6
+    outs:
+    - path: data/interim/dedup_manifest.json
+      hash: md5
+      md5: 08577722d31f996fed8c9fec462fadcb
+      size: 2009740
+    - path: reports/dataset/deduplication_report.json
+      hash: md5
+      md5: c838cddacf129e53aad3d222d376e4ac
+      size: 36609
+  split:
+    cmd: python -m src.data.split_dataset --dedup-manifest 
+      data/interim/dedup_manifest.json --mapping configs/class_mapping.yaml 
+      --params params.yaml --processed-dir data/processed
+    deps:
+    - path: configs/class_mapping.yaml
+      hash: md5
+      md5: 0f908ec5bfe3d613737e0c8ea9236620
+      size: 5105
+    - path: data/interim/dedup_manifest.json
+      hash: md5
+      md5: 08577722d31f996fed8c9fec462fadcb
+      size: 2009740
+    - path: src/data/split_dataset.py
+      hash: md5
+      md5: 999c600736951e89af1261ed6c8f09b3
+      size: 9219
+    params:
+      params.yaml:
+        data_pipeline.random_seed: 42
+        data_pipeline.ultralytics_holdout_ratio: 0.15
+    outs:
+    - path: data/processed/merged.yaml
+      hash: md5
+      md5: 8ca06f9ebad17d6b63540b89fdc57ae3
+      size: 264
+    - path: data/processed/roboflow_only.yaml
+      hash: md5
+      md5: 6d94401f6a25772a7cf67dfd39946d52
+      size: 204
+    - path: data/processed/split_manifest.json
+      hash: md5
+      md5: 7d66b4f0ff8e514b5a87c8811f8c79af
+      size: 866875
+    - path: data/processed/test_roboflow
+      hash: md5
+      md5: 23282bab82b1e1191d06bae6fa3fd3d9.dir
+      size: 9456379
+      nfiles: 164
+    - path: data/processed/test_roboflow.yaml
+      hash: md5
+      md5: 0d43ae45e69880a1bd331312d084df53
+      size: 175
+    - path: data/processed/test_ultralytics
+      hash: md5
+      md5: 5726d5016f910b202e0d4aec4fe3dc93.dir
+      size: 76166371
+      nfiles: 240
+    - path: data/processed/test_ultralytics.yaml
+      hash: md5
+      md5: e60afa26a34a45954fbeb8b45a144fc9
+      size: 181
+    - path: data/processed/train_roboflow
+      hash: md5
+      md5: 6f3d9acc70a81dea6b0093ba070a2581.dir
+      size: 47515304
+      nfiles: 904
+    - path: data/processed/train_ultralytics
+      hash: md5
+      md5: 784aaff74e538b179784054b8fb8ae37.dir
+      size: 439613367
+      nfiles: 1358
+    - path: data/processed/ultralytics_only.yaml
+      hash: md5
+      md5: 8ae2c7c9d83963c0dc1691d3980ba04f
+      size: 213
+    - path: data/processed/val_roboflow
+      hash: md5
+      md5: b7aff0faf6a43ff25d536c267d5bfb84.dir
+      size: 14433975
+      nfiles: 214
+    - path: data/processed/val_ultralytics
+      hash: md5
+      md5: da09da63f234d69c81872a6f8fa4cc60.dir
+      size: 131246305
+      nfiles: 400
+  statistics:
+    cmd: python -m src.data.stats --split-manifest 
+      data/processed/split_manifest.json --mapping configs/class_mapping.yaml 
+      --reports-dir reports/dataset
+    deps:
+    - path: configs/class_mapping.yaml
+      hash: md5
+      md5: 0f908ec5bfe3d613737e0c8ea9236620
+      size: 5105
+    - path: data/processed/split_manifest.json
+      hash: md5
+      md5: 7d66b4f0ff8e514b5a87c8811f8c79af
+      size: 866875
+    - path: src/data/stats.py
+      hash: md5
+      md5: 18bf02a2c8b1f83c320d027f0ce0fd53
+      size: 4827
+    outs:
+    - path: reports/dataset/final_split_distribution.png
+      hash: md5
+      md5: 324f7240288896e81e0cf5a8b81efe42
+      size: 44579
+    - path: reports/dataset/final_split_statistics.csv
+      hash: md5
+      md5: 21be1bfe8e250aa9e4c08fefe9351529
+      size: 1532
+    - path: reports/dataset/final_split_statistics.json
+      hash: md5
+      md5: 4560cd5866f0d160e230b6b00f4d8a83
+      size: 4895

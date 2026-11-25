@@ -1,0 +1,27 @@
+# SafeGuard Dataset Sources Configuration (Single Source of Truth for Raw Inputs)
+
+sources:
+  roboflow_v30:
+    name: "Roboflow Construction Site Safety v30"
+    layout: "roboflow"
+    root_dir: "data/raw/roboflow/construction-site-safety-v30"
+    yaml_path: "data/raw/roboflow/construction-site-safety-v30/data.yaml"
+    license: "CC BY 4.0"
+    license_evidence: "data/raw/roboflow/construction-site-safety-v30/README.dataset.txt"
+    locked_test_split: "test"
+
+  ultralytics_ppe:
+    name: "Ultralytics Construction-PPE (November 2026)"
+    layout: "ultralytics"
+    root_dir: "data/raw/ultralytics/construction-ppe"
+    yaml_path: "data/raw/ultralytics/construction-ppe/data.yaml"
+    license: "CC BY 4.0"
+    license_evidence: "data/raw/ultralytics/construction-ppe/LICENSE.txt"
+    locked_test_split: null
+
+class_mapping_path: "configs/class_mapping.yaml"
+
+paths:
+  interim_dir: "data/interim"
+  processed_dir: "data/processed"
+  reports_dir: "reports/dataset"

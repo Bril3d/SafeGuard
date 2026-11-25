@@ -1,0 +1,228 @@
+{
+  "stage": "statistics",
+  "leakage_check": {
+    "train_val_sha_overlap": 0,
+    "train_test_sha_overlap": 0,
+    "val_test_sha_overlap": 0,
+    "train_test_scene_group_overlap": 0,
+    "train_val_scene_group_overlap": 6
+  },
+  "partitions": {
+    "train_roboflow": {
+      "images": 452,
+      "empty_label_images": 133,
+      "total_boxes": 1871,
+      "per_class": {
+        "person": {
+          "instances": 739,
+          "images": 314
+        },
+        "helmet": {
+          "instances": 357,
+          "images": 140
+        },
+        "vest": {
+          "instances": 299,
+          "images": 122
+        },
+        "gloves": {
+          "instances": 221,
+          "images": 71
+        },
+        "no_helmet": {
+          "instances": 255,
+          "images": 134
+        }
+      }
+    },
+    "val_roboflow": {
+      "images": 107,
+      "empty_label_images": 30,
+      "total_boxes": 358,
+      "per_class": {
+        "person": {
+          "instances": 158,
+          "images": 77
+        },
+        "helmet": {
+          "instances": 76,
+          "images": 40
+        },
+        "vest": {
+          "instances": 38,
+          "images": 26
+        },
+        "gloves": {
+          "instances": 22,
+          "images": 10
+        },
+        "no_helmet": {
+          "instances": 64,
+          "images": 32
+        }
+      }
+    },
+    "test_roboflow": {
+      "images": 82,
+      "empty_label_images": 22,
+      "total_boxes": 426,
+      "per_class": {
+        "person": {
+          "instances": 174,
+          "images": 59
+        },
+        "helmet": {
+          "instances": 110,
+          "images": 30
+        },
+        "vest": {
+          "instances": 61,
+          "images": 22
+        },
+        "gloves": {
+          "instances": 40,
+          "images": 10
+        },
+        "no_helmet": {
+          "instances": 41,
+          "images": 25
+        }
+      }
+    },
+    "train_ultralytics": {
+      "images": 679,
+      "empty_label_images": 5,
+      "total_boxes": 5920,
+      "per_class": {
+        "person": {
+          "instances": 1689,
+          "images": 673
+        },
+        "helmet": {
+          "instances": 1095,
+          "images": 519
+        },
+        "vest": {
+          "instances": 1256,
+          "images": 548
+        },
+        "gloves": {
+          "instances": 1333,
+          "images": 468
+        },
+        "no_helmet": {
+          "instances": 547,
+          "images": 289
+        }
+      }
+    },
+    "val_ultralytics": {
+      "images": 200,
+      "empty_label_images": 0,
+      "total_boxes": 1675,
+      "per_class": {
+        "person": {
+          "instances": 481,
+          "images": 200
+        },
+        "helmet": {
+          "instances": 294,
+          "images": 146
+        },
+        "vest": {
+          "instances": 340,
+          "images": 157
+        },
+        "gloves": {
+          "instances": 381,
+          "images": 136
+        },
+        "no_helmet": {
+          "instances": 179,
+          "images": 91
+        }
+      }
+    },
+    "test_ultralytics": {
+      "images": 120,
+      "empty_label_images": 3,
+      "total_boxes": 978,
+      "per_class": {
+        "person": {
+          "instances": 272,
+          "images": 117
+        },
+        "helmet": {
+          "instances": 186,
+          "images": 93
+        },
+        "vest": {
+          "instances": 220,
+          "images": 96
+        },
+        "gloves": {
+          "instances": 213,
+          "images": 77
+        },
+        "no_helmet": {
+          "instances": 87,
+          "images": 48
+        }
+      }
+    },
+    "train_merged": {
+      "images": 1131,
+      "empty_label_images": 138,
+      "total_boxes": 7791,
+      "per_class": {
+        "person": {
+          "instances": 2428,
+          "images": 987
+        },
+        "helmet": {
+          "instances": 1452,
+          "images": 659
+        },
+        "vest": {
+          "instances": 1555,
+          "images": 670
+        },
+        "gloves": {
+          "instances": 1554,
+          "images": 539
+        },
+        "no_helmet": {
+          "instances": 802,
+          "images": 423
+        }
+      }
+    },
+    "val_merged": {
+      "images": 307,
+      "empty_label_images": 30,
+      "total_boxes": 2033,
+      "per_class": {
+        "person": {
+          "instances": 639,
+          "images": 277
+        },
+        "helmet": {
+          "instances": 370,
+          "images": 186
+        },
+        "vest": {
+          "instances": 378,
+          "images": 183
+        },
+        "gloves": {
+          "instances": 403,
+          "images": 146
+        },
+        "no_helmet": {
+          "instances": 243,
+          "images": 123
+        }
+      }
+    }
+  }
+}
