@@ -1,0 +1,278 @@
+{
+  "EXP-D": {
+    "0.15": {
+      "precision": 0.8948,
+      "recall": 0.7527,
+      "f1": 0.8176,
+      "mAP50": 0.7795,
+      "mAP50_95": 0.5963,
+      "per_class": {
+        "person": {
+          "precision": 0.9262,
+          "recall": 0.8252,
+          "mAP50": 0.8488
+        },
+        "helmet": {
+          "precision": 0.9097,
+          "recall": 0.7757,
+          "mAP50": 0.8135
+        },
+        "vest": {
+          "precision": 0.9499,
+          "recall": 0.8889,
+          "mAP50": 0.9068
+        },
+        "gloves": {
+          "precision": 0.877,
+          "recall": 0.7345,
+          "mAP50": 0.7625
+        },
+        "no_helmet": {
+          "precision": 0.8114,
+          "recall": 0.5391,
+          "mAP50": 0.5657
+        }
+      }
+    },
+    "0.20": {
+      "precision": 0.8948,
+      "recall": 0.7527,
+      "f1": 0.8176,
+      "mAP50": 0.7663,
+      "mAP50_95": 0.5917,
+      "per_class": {
+        "person": {
+          "precision": 0.9262,
+          "recall": 0.8252,
+          "mAP50": 0.8402
+        },
+        "helmet": {
+          "precision": 0.9097,
+          "recall": 0.7757,
+          "mAP50": 0.7965
+        },
+        "vest": {
+          "precision": 0.9499,
+          "recall": 0.8889,
+          "mAP50": 0.8891
+        },
+        "gloves": {
+          "precision": 0.877,
+          "recall": 0.7345,
+          "mAP50": 0.7544
+        },
+        "no_helmet": {
+          "precision": 0.8114,
+          "recall": 0.5391,
+          "mAP50": 0.5514
+        }
+      }
+    },
+    "0.25": {
+      "precision": 0.8948,
+      "recall": 0.7527,
+      "f1": 0.8176,
+      "mAP50": 0.7596,
+      "mAP50_95": 0.5881,
+      "per_class": {
+        "person": {
+          "precision": 0.9262,
+          "recall": 0.8252,
+          "mAP50": 0.8312
+        },
+        "helmet": {
+          "precision": 0.9097,
+          "recall": 0.7757,
+          "mAP50": 0.7878
+        },
+        "vest": {
+          "precision": 0.9499,
+          "recall": 0.8889,
+          "mAP50": 0.8891
+        },
+        "gloves": {
+          "precision": 0.877,
+          "recall": 0.7345,
+          "mAP50": 0.7459
+        },
+        "no_helmet": {
+          "precision": 0.8114,
+          "recall": 0.5391,
+          "mAP50": 0.5437
+        }
+      }
+    },
+    "0.30": {
+      "precision": 0.9067,
+      "recall": 0.7476,
+      "f1": 0.8195,
+      "mAP50": 0.7424,
+      "mAP50_95": 0.5812,
+      "per_class": {
+        "person": {
+          "precision": 0.9399,
+          "recall": 0.82,
+          "mAP50": 0.822
+        },
+        "helmet": {
+          "precision": 0.9138,
+          "recall": 0.7739,
+          "mAP50": 0.77
+        },
+        "vest": {
+          "precision": 0.9542,
+          "recall": 0.8818,
+          "mAP50": 0.8799
+        },
+        "gloves": {
+          "precision": 0.8942,
+          "recall": 0.7343,
+          "mAP50": 0.7284
+        },
+        "no_helmet": {
+          "precision": 0.8316,
+          "recall": 0.5282,
+          "mAP50": 0.5117
+        }
+      }
+    }
+  },
+  "EXP-E": {
+    "0.15": {
+      "precision": 0.9171,
+      "recall": 0.7557,
+      "f1": 0.8286,
+      "mAP50": 0.7796,
+      "mAP50_95": 0.593,
+      "per_class": {
+        "person": {
+          "precision": 0.9356,
+          "recall": 0.8388,
+          "mAP50": 0.8677
+        },
+        "helmet": {
+          "precision": 0.9317,
+          "recall": 0.7743,
+          "mAP50": 0.7947
+        },
+        "vest": {
+          "precision": 0.9569,
+          "recall": 0.8806,
+          "mAP50": 0.8928
+        },
+        "gloves": {
+          "precision": 0.9343,
+          "recall": 0.7416,
+          "mAP50": 0.7758
+        },
+        "no_helmet": {
+          "precision": 0.827,
+          "recall": 0.5432,
+          "mAP50": 0.5673
+        }
+      }
+    },
+    "0.20": {
+      "precision": 0.9171,
+      "recall": 0.7557,
+      "f1": 0.8286,
+      "mAP50": 0.7717,
+      "mAP50_95": 0.5897,
+      "per_class": {
+        "person": {
+          "precision": 0.9356,
+          "recall": 0.8388,
+          "mAP50": 0.8592
+        },
+        "helmet": {
+          "precision": 0.9317,
+          "recall": 0.7743,
+          "mAP50": 0.7947
+        },
+        "vest": {
+          "precision": 0.9569,
+          "recall": 0.8806,
+          "mAP50": 0.8928
+        },
+        "gloves": {
+          "precision": 0.9343,
+          "recall": 0.7416,
+          "mAP50": 0.7591
+        },
+        "no_helmet": {
+          "precision": 0.827,
+          "recall": 0.5432,
+          "mAP50": 0.5528
+        }
+      }
+    },
+    "0.25": {
+      "precision": 0.9171,
+      "recall": 0.7557,
+      "f1": 0.8286,
+      "mAP50": 0.7613,
+      "mAP50_95": 0.5852,
+      "per_class": {
+        "person": {
+          "precision": 0.9356,
+          "recall": 0.8388,
+          "mAP50": 0.8412
+        },
+        "helmet": {
+          "precision": 0.9317,
+          "recall": 0.7743,
+          "mAP50": 0.7772
+        },
+        "vest": {
+          "precision": 0.9569,
+          "recall": 0.8806,
+          "mAP50": 0.8928
+        },
+        "gloves": {
+          "precision": 0.9343,
+          "recall": 0.7416,
+          "mAP50": 0.7504
+        },
+        "no_helmet": {
+          "precision": 0.827,
+          "recall": 0.5432,
+          "mAP50": 0.545
+        }
+      }
+    },
+    "0.30": {
+      "precision": 0.9047,
+      "recall": 0.765,
+      "f1": 0.829,
+      "mAP50": 0.7562,
+      "mAP50_95": 0.5838,
+      "per_class": {
+        "person": {
+          "precision": 0.9221,
+          "recall": 0.8451,
+          "mAP50": 0.8412
+        },
+        "helmet": {
+          "precision": 0.9089,
+          "recall": 0.7865,
+          "mAP50": 0.7772
+        },
+        "vest": {
+          "precision": 0.9462,
+          "recall": 0.8836,
+          "mAP50": 0.8833
+        },
+        "gloves": {
+          "precision": 0.9318,
+          "recall": 0.7543,
+          "mAP50": 0.7504
+        },
+        "no_helmet": {
+          "precision": 0.8148,
+          "recall": 0.5556,
+          "mAP50": 0.529
+        }
+      }
+    }
+  }
+}
