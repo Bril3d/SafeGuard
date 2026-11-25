@@ -1,0 +1,98 @@
+{
+  "weights_path": "models\\candidates\\EXP-C\\EXP-C_seed42_best.pt",
+  "images_analyzed": 82,
+  "conf_threshold": 0.25,
+  "iou_threshold": 0.5,
+  "totals": {
+    "tp": 264,
+    "fp": 90,
+    "fn": 162,
+    "small_object_fn": 128
+  },
+  "per_class_fp": {
+    "0": 25,
+    "1": 11,
+    "2": 18,
+    "3": 14,
+    "4": 22
+  },
+  "per_class_fn": {
+    "0": 63,
+    "1": 32,
+    "2": 18,
+    "3": 28,
+    "4": 21
+  },
+  "worst_images_top10": [
+    {
+      "image": "roboflow_v30__test__b5f05c54ef70.jpg",
+      "tp": 10,
+      "fp": 16,
+      "fn": 25,
+      "small_object_fn": 16
+    },
+    {
+      "image": "roboflow_v30__test__eba79595a228.jpg",
+      "tp": 58,
+      "fp": 17,
+      "fn": 22,
+      "small_object_fn": 20
+    },
+    {
+      "image": "roboflow_v30__test__9ef7cd0ebd61.jpg",
+      "tp": 2,
+      "fp": 3,
+      "fn": 13,
+      "small_object_fn": 12
+    },
+    {
+      "image": "roboflow_v30__test__808ad7e5f0fd.jpg",
+      "tp": 11,
+      "fp": 10,
+      "fn": 4,
+      "small_object_fn": 4
+    },
+    {
+      "image": "roboflow_v30__test__99aa58c9708c.jpg",
+      "tp": 0,
+      "fp": 1,
+      "fn": 12,
+      "small_object_fn": 12
+    },
+    {
+      "image": "roboflow_v30__test__b9183613584a.jpg",
+      "tp": 0,
+      "fp": 3,
+      "fn": 9,
+      "small_object_fn": 9
+    },
+    {
+      "image": "roboflow_v30__test__c5c30d21b9e9.jpg",
+      "tp": 3,
+      "fp": 2,
+      "fn": 7,
+      "small_object_fn": 3
+    },
+    {
+      "image": "roboflow_v30__test__efc6a13d0981.jpg",
+      "tp": 2,
+      "fp": 5,
+      "fn": 4,
+      "small_object_fn": 4
+    },
+    {
+      "image": "roboflow_v30__test__e1806a5d39da.jpg",
+      "tp": 6,
+      "fp": 1,
+      "fn": 7,
+      "small_object_fn": 7
+    },
+    {
+      "image": "roboflow_v30__test__700c31db93c3.jpg",
+      "tp": 24,
+      "fp": 0,
+      "fn": 7,
+      "small_object_fn": 4
+    }
+  ]
+}

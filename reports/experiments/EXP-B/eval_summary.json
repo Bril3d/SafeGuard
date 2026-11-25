@@ -1,0 +1,100 @@
+{
+  "weights_path": "models\\candidates\\EXP-B\\EXP-B_seed42_best.pt",
+  "imgsz": 640,
+  "conf": 0.25,
+  "iou": 0.5,
+  "test_results": {
+    "roboflow_test": {
+      "test_yaml": "data/processed/test_roboflow.yaml",
+      "precision": 0.6642,
+      "recall": 0.4868,
+      "f1": 0.5618,
+      "mAP50": 0.4479,
+      "mAP50_95": 0.2834,
+      "per_class": {
+        "person": {
+          "precision": 0.8134,
+          "recall": 0.6264,
+          "f1": 0.7078,
+          "mAP50": 0.6149,
+          "mAP50_95": 0.4162
+        },
+        "helmet": {
+          "precision": 0.9333,
+          "recall": 0.6364,
+          "f1": 0.7568,
+          "mAP50": 0.6325,
+          "mAP50_95": 0.3928
+        },
+        "vest": {
+          "precision": 0.6071,
+          "recall": 0.5574,
+          "f1": 0.5812,
+          "mAP50": 0.5094,
+          "mAP50_95": 0.3194
+        },
+        "gloves": {
+          "precision": 0.4375,
+          "recall": 0.175,
+          "f1": 0.25,
+          "mAP50": 0.1574,
+          "mAP50_95": 0.1012
+        },
+        "no_helmet": {
+          "precision": 0.5294,
+          "recall": 0.439,
+          "f1": 0.48,
+          "mAP50": 0.3253,
+          "mAP50_95": 0.1874
+        }
+      },
+      "save_dir": "C:\\dev\\SafeGuard\\runs\\detect\\runs\\eval\\EXP-B_seed42_best_roboflow_test"
+    },
+    "ultralytics_test": {
+      "test_yaml": "data/processed/test_ultralytics.yaml",
+      "precision": 0.6954,
+      "recall": 0.5208,
+      "f1": 0.5956,
+      "mAP50": 0.5032,
+      "mAP50_95": 0.3296,
+      "per_class": {
+        "person": {
+          "precision": 0.8322,
+          "recall": 0.9118,
+          "f1": 0.8702,
+          "mAP50": 0.9103,
+          "mAP50_95": 0.5761
+        },
+        "helmet": {
+          "precision": 0.8981,
+          "recall": 0.7581,
+          "f1": 0.8222,
+          "mAP50": 0.75,
+          "mAP50_95": 0.5209
+        },
+        "vest": {
+          "precision": 0.9222,
+          "recall": 0.7545,
+          "f1": 0.83,
+          "mAP50": 0.7365,
+          "mAP50_95": 0.4837
+        },
+        "gloves": {
+          "precision": 0.7027,
+          "recall": 0.1221,
+          "f1": 0.208,
+          "mAP50": 0.1106,
+          "mAP50_95": 0.0628
+        },
+        "no_helmet": {
+          "precision": 0.122,
+          "recall": 0.0575,
+          "f1": 0.0781,
+          "mAP50": 0.0087,
+          "mAP50_95": 0.0043
+        }
+      },
+      "save_dir": "C:\\dev\\SafeGuard\\runs\\detect\\runs\\eval\\EXP-B_seed42_best_ultralytics_test"
+    }
+  }
+}
