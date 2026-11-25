@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safeguard"
+version = "0.1.0"
+description = "SafeGuard - Real-Time Construction PPE Detection and Monitoring"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<10.0",
+    "httpx>=0.27,<1.0",
+    "black>=24.0,<26.0",
+    "flake8>=7.0,<8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.agents
+  | \.venv
+  | \.venv-backend
+  | \.venv-train
+  | data
+  | models
+  | frontend/node_modules
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests", "backend/tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"

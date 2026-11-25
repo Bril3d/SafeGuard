@@ -1,0 +1,38 @@
+name: Docker Build Validation
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  docker-validate:
+    name: Validate Compose & Multi-Stage Docker Builds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: docker compose config --quiet
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: false
+          tags: safeguard-backend:ci
+
+      - name: Build frontend Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: false
+          tags: safeguard-frontend:ci

@@ -1,0 +1,12 @@
+# Ignore non-data directories when running DVC scans
+.git/
+.github/
+.venv/
+.venv-backend/
+.venv-train/
+backend/
+frontend/
+docs/
+tests/
+__pycache__/
+node_modules/

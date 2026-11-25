@@ -1,0 +1,116 @@
+.agents/
+skills-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Virtual environments
+.venv/
+.venv-backend/
+.venv-train/
+venv/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# DVC-managed datasets & model binaries (never commit to Git)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+models/*
+!models/.gitkeep
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.engine
+*.zip
+*.tar.gz
+
+# MLflow local artifacts & databases
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Frontend Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/playwright-report/
+frontend/test-results/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Virtual environments
+.venv/
+.venv-backend/
+.venv-train/
+venv/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# DVC-managed datasets & model binaries (never commit to Git)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+models/*
+!models/.gitkeep
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.engine
+*.zip
+*.tar.gz
+
+# MLflow local artifacts & databases
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Frontend Node.js
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/playwright-report/
+frontend/test-results/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

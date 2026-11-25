@@ -1,0 +1,15 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, W503
+exclude =
+    .git,
+    .agents,
+    .venv,
+    .venv-backend,
+    .venv-train,
+    __pycache__,
+    build,
+    dist,
+    data,
+    models,
+    frontend/node_modules

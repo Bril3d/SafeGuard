@@ -1,0 +1,78 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      SAFEGUARD_ENV: ${SAFEGUARD_ENV:-production}
+      SAFEGUARD_API_TITLE: ${SAFEGUARD_API_TITLE:-SafeGuard API}
+      SAFEGUARD_API_VERSION: ${SAFEGUARD_API_VERSION:-0.1.0}
+      SAFEGUARD_LOG_LEVEL: ${SAFEGUARD_LOG_LEVEL:-INFO}
+      SAFEGUARD_MODEL_VERSION: ${SAFEGUARD_MODEL_VERSION:-unloaded}
+      SAFEGUARD_CORS_ORIGINS: ${SAFEGUARD_CORS_ORIGINS:-["http://localhost:3000","http://localhost:5173"]}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:80/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.22.4
+    command:
+      - mlflow
+      - server
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5000"
+      - --backend-store-uri
+      - sqlite:////mlflow/mlflow.db
+      - --default-artifact-root
+      - /mlflow/artifacts
+    ports:
+      - "${MLFLOW_PORT:-5000}:5000"
+    volumes:
+      - mlflow_data:/mlflow
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+volumes:
+  mlflow_data:
+
+networks:
+  safeguard_net:
+    driver: bridge
