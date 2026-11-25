@@ -1,0 +1,90 @@
+source,split,class_id,class_name,instance_count,image_count,pct_of_split_instances
+roboflow_v30,test,0,Excavator,9,7,1.12
+roboflow_v30,test,1,Gloves,40,10,4.96
+roboflow_v30,test,2,Hardhat,110,30,13.65
+roboflow_v30,test,3,Ladder,5,5,0.62
+roboflow_v30,test,4,Mask,28,16,3.47
+roboflow_v30,test,5,NO-Hardhat,41,25,5.09
+roboflow_v30,test,6,NO-Mask,79,30,9.8
+roboflow_v30,test,7,NO-Safety Vest,90,36,11.17
+roboflow_v30,test,8,Person,174,59,21.59
+roboflow_v30,test,10,Safety Cone,92,8,11.41
+roboflow_v30,test,11,Safety Vest,61,22,7.57
+roboflow_v30,test,13,dump truck,17,11,2.11
+roboflow_v30,test,15,machinery,6,5,0.74
+roboflow_v30,test,17,sedan,2,2,0.25
+roboflow_v30,test,19,trailer,1,1,0.12
+roboflow_v30,test,20,truck and trailer,2,2,0.25
+roboflow_v30,test,22,van,7,3,0.87
+roboflow_v30,test,23,vehicle,30,12,3.72
+roboflow_v30,test,24,wheel loader,12,9,1.49
+roboflow_v30,train,0,Excavator,145,114,3.6
+roboflow_v30,train,1,Gloves,231,75,5.73
+roboflow_v30,train,2,Hardhat,385,159,9.55
+roboflow_v30,train,3,Ladder,43,36,1.07
+roboflow_v30,train,4,Mask,153,88,3.8
+roboflow_v30,train,5,NO-Hardhat,292,171,7.24
+roboflow_v30,train,6,NO-Mask,338,176,8.39
+roboflow_v30,train,7,NO-Safety Vest,386,214,9.58
+roboflow_v30,train,8,Person,808,372,20.04
+roboflow_v30,train,9,SUV,16,10,0.4
+roboflow_v30,train,10,Safety Cone,464,51,11.51
+roboflow_v30,train,11,Safety Vest,322,138,7.99
+roboflow_v30,train,12,bus,1,1,0.02
+roboflow_v30,train,13,dump truck,127,99,3.15
+roboflow_v30,train,14,fire hydrant,6,5,0.15
+roboflow_v30,train,15,machinery,31,19,0.77
+roboflow_v30,train,16,mini-van,6,6,0.15
+roboflow_v30,train,17,sedan,39,19,0.97
+roboflow_v30,train,18,semi,7,7,0.17
+roboflow_v30,train,19,trailer,13,10,0.32
+roboflow_v30,train,20,truck and trailer,29,21,0.72
+roboflow_v30,train,21,truck,4,3,0.1
+roboflow_v30,train,22,van,18,15,0.45
+roboflow_v30,train,23,vehicle,74,25,1.84
+roboflow_v30,train,24,wheel loader,93,85,2.31
+roboflow_v30,valid,0,Excavator,12,10,1.64
+roboflow_v30,valid,1,Gloves,25,11,3.41
+roboflow_v30,valid,2,Hardhat,79,42,10.78
+roboflow_v30,valid,3,Ladder,10,8,1.36
+roboflow_v30,valid,4,Mask,21,19,2.86
+roboflow_v30,valid,5,NO-Hardhat,69,37,9.41
+roboflow_v30,valid,6,NO-Mask,74,44,10.1
+roboflow_v30,valid,7,NO-Safety Vest,106,56,14.46
+roboflow_v30,valid,8,Person,166,84,22.65
+roboflow_v30,valid,10,Safety Cone,44,13,6.0
+roboflow_v30,valid,11,Safety Vest,41,28,5.59
+roboflow_v30,valid,13,dump truck,13,10,1.77
+roboflow_v30,valid,15,machinery,8,6,1.09
+roboflow_v30,valid,16,mini-van,1,1,0.14
+roboflow_v30,valid,17,sedan,13,4,1.77
+roboflow_v30,valid,19,trailer,1,1,0.14
+roboflow_v30,valid,20,truck and trailer,4,4,0.55
+roboflow_v30,valid,21,truck,3,1,0.41
+roboflow_v30,valid,22,van,3,3,0.41
+roboflow_v30,valid,23,vehicle,18,9,2.46
+roboflow_v30,valid,24,wheel loader,22,13,3.0
+ultralytics_ppe,train,0,helmet,1282,613,10.77
+ultralytics_ppe,train,1,gloves,1548,546,13.01
+ultralytics_ppe,train,2,vest,1476,644,12.4
+ultralytics_ppe,train,3,boots,2003,576,16.83
+ultralytics_ppe,train,4,goggles,612,437,5.14
+ultralytics_ppe,train,5,Person,1962,791,16.48
+ultralytics_ppe,train,6,no_helmet,634,337,5.33
+ultralytics_ppe,train,7,no_goggle,265,227,2.23
+ultralytics_ppe,train,8,no_gloves,839,340,7.05
+ultralytics_ppe,train,9,no_boots,569,244,4.78
+ultralytics_ppe,train,10,forklift,275,201,2.31
+ultralytics_ppe,train,11,no_vest,437,300,3.67
+ultralytics_ppe,val,0,helmet,294,146,9.93
+ultralytics_ppe,val,1,gloves,381,136,12.87
+ultralytics_ppe,val,2,vest,340,157,11.48
+ultralytics_ppe,val,3,boots,481,155,16.24
+ultralytics_ppe,val,4,goggles,139,102,4.69
+ultralytics_ppe,val,5,Person,481,200,16.24
+ultralytics_ppe,val,6,no_helmet,179,91,6.05
+ultralytics_ppe,val,7,no_goggle,82,56,2.77
+ultralytics_ppe,val,8,no_gloves,203,94,6.86
+ultralytics_ppe,val,9,no_boots,178,71,6.01
+ultralytics_ppe,val,10,forklift,73,46,2.47
+ultralytics_ppe,val,11,no_vest,130,84,4.39

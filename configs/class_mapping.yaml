@@ -1,0 +1,152 @@
+# SafeGuard Canonical Class Mapping (Single Source of Truth)
+# Audited against downloaded raw YAML files and visual annotation galleries.
+# Do NOT hardcode class IDs across training or inference scripts.
+
+schema_version: "1.0"
+audit_date: "2026-11-25"
+status: "provisional_pending_user_approval"
+
+sources:
+  roboflow_v30:
+    name: "Roboflow Construction Site Safety v30"
+    yaml_path: "data/raw/roboflow/construction-site-safety-v30/data.yaml"
+    license: "CC BY 4.0"
+    total_classes_in_source: 25
+  ultralytics_ppe:
+    name: "Ultralytics Construction-PPE (November 2026)"
+    yaml_path: "data/raw/ultralytics/construction-ppe/data.yaml"
+    license: "CC BY 4.0"
+    total_classes_in_source: 12
+
+canonical_classes:
+  - id: 0
+    name: "person"
+    status: "approved"
+    semantic_rationale: "Full visible person body bounding box in both sources (median AR 0.396 RF vs 0.298 UL)."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/person__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/person__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 8
+        name: "Person"
+        total_instances: 1148
+      ultralytics_ppe:
+        id: 5
+        name: "Person"
+        total_instances: 2443
+
+  - id: 1
+    name: "helmet"
+    status: "approved"
+    semantic_rationale: "Tight bounding box around worn safety helmet/hardhat (median AR 0.898 RF vs 0.828 UL)."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/helmet__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/helmet__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 2
+        name: "Hardhat"
+        total_instances: 574
+      ultralytics_ppe:
+        id: 0
+        name: "helmet"
+        total_instances: 1576
+
+  - id: 2
+    name: "vest"
+    status: "approved"
+    semantic_rationale: "Upper-body high-visibility vest bounding box (median AR 0.505 RF vs 0.507 UL)."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/vest__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/vest__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 11
+        name: "Safety Vest"
+        total_instances: 424
+      ultralytics_ppe:
+        id: 2
+        name: "vest"
+        total_instances: 1816
+
+  - id: 3
+    name: "gloves"
+    status: "approved"
+    semantic_rationale: "Individual gloved hand bounding boxes in both sources; small-object class with RF/UL count imbalance."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/gloves__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/gloves__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 1
+        name: "Gloves"
+        total_instances: 296
+      ultralytics_ppe:
+        id: 1
+        name: "gloves"
+        total_instances: 1929
+
+  - id: 4
+    name: "no_helmet"
+    status: "approved"
+    semantic_rationale: "Explicit missing-helmet head annotation in both sources; CAUTION: Roboflow NO-Hardhat boxes often cover only the top hairline/crown (median AR 1.264) whereas Ultralytics no_helmet covers the full head/face (median AR 0.667)."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/no_helmet__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/no_helmet__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 5
+        name: "NO-Hardhat"
+        total_instances: 402
+      ultralytics_ppe:
+        id: 6
+        name: "no_helmet"
+        total_instances: 813
+
+candidate_classes:
+  - proposed_id: 5
+    name: "no_vest"
+    status: "pending_approval"
+    semantic_rationale: "Present in both sources (NO-Safety Vest [ID 7] in RF v30, no_vest [ID 11] in UL) with consistent torso-without-vest semantics and closely aligned geometry (median AR 0.596 RF vs 0.583 UL; 582 RF vs 567 UL instances). Held as pending_approval until explicit user sign-off."
+    evidence_gallery:
+      - "reports/dataset/annotation_gallery/no_vest__roboflow_v30.png"
+      - "reports/dataset/annotation_gallery/no_vest__ultralytics_ppe.png"
+    sources:
+      roboflow_v30:
+        id: 7
+        name: "NO-Safety Vest"
+        total_instances: 582
+      ultralytics_ppe:
+        id: 11
+        name: "no_vest"
+        total_instances: 567
+
+excluded_single_source_classes:
+  roboflow_v30:
+    - {id: 0, name: "Excavator"}
+    - {id: 3, name: "Ladder"}
+    - {id: 4, name: "Mask"}
+    - {id: 6, name: "NO-Mask"}
+    - {id: 9, name: "SUV"}
+    - {id: 10, name: "Safety Cone"}
+    - {id: 12, name: "bus"}
+    - {id: 13, name: "dump truck"}
+    - {id: 14, name: "fire hydrant"}
+    - {id: 15, name: "machinery"}
+    - {id: 16, name: "mini-van"}
+    - {id: 17, name: "sedan"}
+    - {id: 18, name: "semi"}
+    - {id: 19, name: "trailer"}
+    - {id: 20, name: "truck and trailer"}
+    - {id: 21, name: "truck"}
+    - {id: 22, name: "van"}
+    - {id: 23, name: "vehicle"}
+    - {id: 24, name: "wheel loader"}
+  ultralytics_ppe:
+    - {id: 3, name: "boots"}
+    - {id: 4, name: "goggles"}
+    - {id: 7, name: "no_goggle"}
+    - {id: 8, name: "no_gloves"}
+    - {id: 9, name: "no_boots"}
+    - {id: 10, name: "forklift"}
