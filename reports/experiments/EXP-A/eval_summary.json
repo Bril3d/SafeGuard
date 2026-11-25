@@ -1,0 +1,100 @@
+{
+  "weights_path": "models\\candidates\\EXP-A\\EXP-A_seed42_best.pt",
+  "imgsz": 640,
+  "conf": 0.25,
+  "iou": 0.5,
+  "test_results": {
+    "ultralytics_test": {
+      "test_yaml": "data/processed/test_ultralytics.yaml",
+      "precision": 0.9358,
+      "recall": 0.8031,
+      "f1": 0.8644,
+      "mAP50": 0.8106,
+      "mAP50_95": 0.6321,
+      "per_class": {
+        "person": {
+          "precision": 0.9677,
+          "recall": 0.9485,
+          "f1": 0.958,
+          "mAP50": 0.9545,
+          "mAP50_95": 0.8209
+        },
+        "helmet": {
+          "precision": 0.9386,
+          "recall": 0.8225,
+          "f1": 0.8768,
+          "mAP50": 0.8229,
+          "mAP50_95": 0.6622
+        },
+        "vest": {
+          "precision": 0.9576,
+          "recall": 0.9248,
+          "f1": 0.9409,
+          "mAP50": 0.9354,
+          "mAP50_95": 0.752
+        },
+        "gloves": {
+          "precision": 0.9395,
+          "recall": 0.8025,
+          "f1": 0.8656,
+          "mAP50": 0.8188,
+          "mAP50_95": 0.6241
+        },
+        "no_helmet": {
+          "precision": 0.8752,
+          "recall": 0.5172,
+          "f1": 0.6502,
+          "mAP50": 0.5215,
+          "mAP50_95": 0.3013
+        }
+      },
+      "save_dir": "C:\\dev\\SafeGuard\\runs\\detect\\runs\\eval\\EXP-A_seed42_best_ultralytics_test"
+    },
+    "roboflow_test": {
+      "test_yaml": "data/processed/test_roboflow.yaml",
+      "precision": 0.5776,
+      "recall": 0.3919,
+      "f1": 0.4669,
+      "mAP50": 0.3526,
+      "mAP50_95": 0.2045,
+      "per_class": {
+        "person": {
+          "precision": 0.8198,
+          "recall": 0.523,
+          "f1": 0.6386,
+          "mAP50": 0.5072,
+          "mAP50_95": 0.3264
+        },
+        "helmet": {
+          "precision": 0.8889,
+          "recall": 0.5818,
+          "f1": 0.7033,
+          "mAP50": 0.5636,
+          "mAP50_95": 0.3659
+        },
+        "vest": {
+          "precision": 0.6596,
+          "recall": 0.5082,
+          "f1": 0.5741,
+          "mAP50": 0.4686,
+          "mAP50_95": 0.2308
+        },
+        "gloves": {
+          "precision": 0.3478,
+          "recall": 0.2,
+          "f1": 0.254,
+          "mAP50": 0.1421,
+          "mAP50_95": 0.0808
+        },
+        "no_helmet": {
+          "precision": 0.1716,
+          "recall": 0.1463,
+          "f1": 0.158,
+          "mAP50": 0.0813,
+          "mAP50_95": 0.0188
+        }
+      },
+      "save_dir": "C:\\dev\\SafeGuard\\runs\\detect\\runs\\eval\\EXP-A_seed42_best_roboflow_test"
+    }
+  }
+}
