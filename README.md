@@ -133,7 +133,56 @@ python -m src.orchestration.prefect_flows --mode dry-run
 cd frontend
 npm run lint
 npm run build
+
+# Full Playwright end-to-end verification (with backend :8000 and Vite :5173 running)
+npm run test:e2e
 ```
+
+---
+
+## End-to-End Workflows & UI Walkthrough (Playwright Verified)
+
+The full frontend-to-ONNX backend user journey is verified end-to-end with Playwright (`frontend/tests/safeguard.spec.ts`) across all eight operational views, real inference requests, client-side upload validation, ByteTrack temporal confirmation, alert review actions, and Recharts/telemetry rendering with zero console or page errors.
+
+### 1. Operational Overview (Initial & Live Session State)
+
+Health status (`ONNX Model Ready`), active model metadata (`EXP-E-yolo11s-onnx`, `CPUExecutionProvider`, `opset 17 / 640px`), safety scope boundaries, and cumulative session KPIs (`Total Persons Detected`, `PPE Detections`, `Missing-PPE Predictions`, `Potential Violation Alerts`) alongside `Recent Potential Alerts` and `Session Request Activity`.
+
+| Initial Session Overview | Populated Multi-Workflow Session Overview |
+| --- | --- |
+| ![SafeGuard Initial Overview](docs/assets/screenshots/01_overview.png) | ![SafeGuard Populated Overview](docs/assets/screenshots/10_overview_populated.png) |
+
+### 2. Image Analysis (Canvas Overlay & OpenCV Server Rendering)
+
+Supports drag-and-drop and file picker uploads with MIME/size validation (`Unsupported file format` guard), real-time upload progress bar, structured xyxy detection table, per-stage timing breakdown (`preprocess`, `inference`, `postprocess`, and client end-to-end latency), interactive HTML `<canvas>` bounding boxes, and a toggle to view server-rendered OpenCV annotations from `POST /predict/visualize`.
+
+| Interactive Canvas Overlay (`POST /predict`) | Server-Rendered OpenCV Output (`POST /predict/visualize`) |
+| --- | --- |
+| ![Image Analysis Canvas Overlay](docs/assets/screenshots/02_image_analysis_canvas.png) | ![Image Analysis Server Annotated](docs/assets/screenshots/03_image_analysis_server_annotated.png) |
+
+### 3. Example Gallery & Live Webcam Monitoring (ByteTrack + Compliance)
+
+- **Example Gallery**: Curated licensed CC BY 4.0 validation scenes wired directly to `POST /predict` for single-click ONNX evaluation.
+- **Live Monitoring**: Bounded single-in-flight webcam capture (`navigator.mediaDevices.getUserMedia`) with stale-frame dropping, separated server inference vs. client E2E latency, live FPS counter, anonymous ByteTrack IDs (`#1`, `#2`, ...), and explicit `no_helmet` multi-frame confirmation via `POST /predict/compliance`.
+
+| Curated Example Gallery (`POST /predict`) | Live Monitoring (`POST /predict/compliance` + ByteTrack) |
+| --- | --- |
+| ![Example Gallery Inference](docs/assets/screenshots/04_example_gallery.png) | ![Live Monitoring ByteTrack Stream](docs/assets/screenshots/05_live_monitoring.png) |
+
+### 4. Alert History Review, Session Analytics, Monitoring & Settings
+
+- **Alert History & Human Review Queue**: Potential missing-helmet alerts (`3f` confirmation window) requiring operator review (`Verify`, `Dismiss`) and status filtering (`All`, `Pending Review`, `Verified`, `Dismissed`).
+- **Session Analytics**: Live Recharts cumulative class distribution (`Person`, `Helmet`, `Safety vest`, `Gloves`, `No helmet`) and Server Inference vs. Client E2E latency trend.
+- **Model & Operational Monitoring**: Readiness status, mean/P95 latency, error count, and chronological request telemetry log.
+- **Settings & Model Information**: Interactive `conf`, `iou`, and stream capture cadence controls plus live ONNX metadata (`safeguard_yolo11s.onnx`, SHA-256, MLflow run ID, canonical classes, and tensor bindings).
+
+| Alert History & Operator Review Queue | Session Analytics (Recharts) |
+| --- | --- |
+| ![Alert History Review Queue](docs/assets/screenshots/06_alert_history.png) | ![Session Analytics Charts](docs/assets/screenshots/07_analytics.png) |
+
+| Model & Operational Monitoring | Settings & Live ONNX Artifact Metadata |
+| --- | --- |
+| ![Model Monitoring Telemetry](docs/assets/screenshots/08_model_monitoring.png) | ![Settings and Model Info](docs/assets/screenshots/09_settings_model_info.png) |
 
 ---
 
