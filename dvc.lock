@@ -268,3 +268,71 @@ stages:
       hash: md5
       md5: 1d809c4ceb9ade6d1107e858bb46c7cf
       size: 2600
+  export:
+    cmd: python -m src.models.export_onnx --output 
+      models/production/safeguard_yolo11s.onnx --verification-output 
+      reports/benchmark/verification_report.json
+    deps:
+    - path: backend/app/inference.py
+      hash: md5
+      md5: 56665b56539aa1715729a87b336febd1
+      size: 10834
+    - path: configs/class_mapping.yaml
+      hash: md5
+      md5: 0f908ec5bfe3d613737e0c8ea9236620
+      size: 5105
+    - path: reports/experiments/active_eval_summary.json
+      hash: md5
+      md5: 1d809c4ceb9ade6d1107e858bb46c7cf
+      size: 2600
+    - path: src/models/export_onnx.py
+      hash: md5
+      md5: 534e1d9dc05798c554e9be68457161ac
+      size: 30586
+    params:
+      params.yaml:
+        training.conf_threshold: 0.25
+        training.iou_threshold: 0.5
+    outs:
+    - path: models/production/safeguard_yolo11s.metadata.json
+      hash: md5
+      md5: bbdd5056b69521cb18976b4a3cc117b7
+      size: 1189
+    - path: models/production/safeguard_yolo11s.onnx
+      hash: md5
+      md5: b5eacf263b922e4cf22c03027e590267
+      size: 37894896
+    - path: reports/benchmark/verification_report.json
+      hash: md5
+      md5: 454267fde96e5ebc746ccf86cca69513
+      size: 2212
+  benchmark:
+    cmd: python -m src.models.benchmark --onnx 
+      models/production/safeguard_yolo11s.onnx --output 
+      reports/benchmark/benchmark_report.json
+    deps:
+    - path: backend/app/inference.py
+      hash: md5
+      md5: 56665b56539aa1715729a87b336febd1
+      size: 10834
+    - path: reports/benchmark/verification_report.json
+      hash: md5
+      md5: 454267fde96e5ebc746ccf86cca69513
+      size: 2212
+    - path: src/models/benchmark.py
+      hash: md5
+      md5: 6eee056787874d2173aa85628b1125c1
+      size: 23064
+    outs:
+    - path: reports/benchmark/benchmark_comparison.md
+      hash: md5
+      md5: 4c830a46115edff2a2dfba201991aa6f
+      size: 2443
+    - path: reports/benchmark/benchmark_report.json
+      hash: md5
+      md5: a0d7a83ca2c5182db3f444c88a137b96
+      size: 4597
+    - path: reports/benchmark/latency_comparison.png
+      hash: md5
+      md5: 612a0b29433d3f93296c6e106be7a841
+      size: 79519

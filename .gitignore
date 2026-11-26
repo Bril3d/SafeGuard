@@ -24,6 +24,7 @@ venv/
 !.env.example
 
 # DVC-managed datasets & model binaries (never commit to Git)
+.dvc/local_remote/
 data/raw/*
 data/interim/*
 data/processed/*
@@ -82,6 +83,7 @@ venv/
 !.env.example
 
 # DVC-managed datasets & model binaries (never commit to Git)
+.dvc/local_remote/
 data/raw/*
 data/interim/*
 data/processed/*
