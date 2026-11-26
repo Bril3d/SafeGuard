@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 
 from backend.app.config import get_settings
 from backend.app.inference import ONNXDetector
+from backend.app.monitoring import OperationalMonitor
 from backend.app.routes.compliance import router as compliance_router
 from backend.app.routes.dependencies import build_compliance_service
 from backend.app.routes.health import router as health_router
@@ -100,11 +101,20 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
                 model_file,
             )
 
+    log_path = (
+        Path(settings.prediction_log_path)
+        if (settings.prediction_log_path or "").strip()
+        else None
+    )
+    monitor = OperationalMonitor(log_path=log_path)
+    application.state.monitor = monitor
+
     inf_service = InferenceService(
         detector=detector,
         model_version=str(application.state.loaded_model_version),
         max_upload_bytes=settings.max_upload_bytes,
         max_image_dimension=settings.max_image_dimension,
+        monitor=monitor,
     )
     application.state.inference_service = inf_service
     application.state.compliance_service = build_compliance_service(
@@ -115,6 +125,7 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     application.state.detector = None
     application.state.inference_service = None
     application.state.compliance_service = None
+    application.state.monitor = None
     application.state.model_loaded = False
 
 
@@ -149,6 +160,11 @@ def create_app() -> FastAPI:
     @application.exception_handler(ImageValidationError)
     async def handle_invalid_image(request: Request, exc: ImageValidationError):
         req_id = str(getattr(request.state, "request_id", "unknown"))
+        monitor = getattr(request.app.state, "monitor", None)
+        if monitor is not None:
+            monitor.record_error(
+                route=request.url.path, status_code=400, error_code="invalid_image"
+            )
         return _error_json(
             status_code=status.HTTP_400_BAD_REQUEST,
             code="invalid_image",
@@ -159,6 +175,13 @@ def create_app() -> FastAPI:
     @application.exception_handler(ModelUnavailableError)
     async def handle_model_unavailable(request: Request, exc: ModelUnavailableError):
         req_id = str(getattr(request.state, "request_id", "unknown"))
+        monitor = getattr(request.app.state, "monitor", None)
+        if monitor is not None:
+            monitor.record_error(
+                route=request.url.path,
+                status_code=503,
+                error_code="model_unavailable",
+            )
         return _error_json(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             code="model_unavailable",

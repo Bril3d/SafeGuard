@@ -309,6 +309,7 @@ def test_openapi_docs_and_paths_accessible(monkeypatch) -> None:
         paths = schema_res.json()["paths"]
         for expected in (
             "/health",
+            "/metrics",
             "/model/metadata",
             "/classes",
             "/predict",

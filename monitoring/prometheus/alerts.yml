@@ -1,0 +1,29 @@
+groups:
+  - name: safeguard_operational_alerts
+    rules:
+      - alert: SafeGuardBackendDown
+        expr: up{job="safeguard-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "SafeGuard FastAPI backend target unreachable"
+          description: "Prometheus failed to scrape backend:8000/metrics for 1 minute."
+
+      - alert: SafeGuardHighErrorRate
+        expr: increase(safeguard_prediction_errors_total[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Elevated inference API errors (>10 in 5m)"
+          description: "Inspect FastAPI logs and backend/app/monitoring.py telemetry."
+
+      - alert: SafeGuardHighInferenceLatency
+        expr: histogram_quantile(0.95, sum(rate(safeguard_inference_latency_seconds_bucket[5m])) by (le)) > 0.5
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "P95 ONNX inference latency exceeds 500ms"
+          description: "CPU inference latency degradation detected; verify host load or model artifact."

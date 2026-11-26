@@ -106,6 +106,12 @@ class Settings(BaseSettings):
         le=0.95,
         description="Minimum IoU for primary track-to-detection matching.",
     )
+    prediction_log_path: str | None = Field(
+        default=None,
+        description=(
+            "Optional filesystem path for anonymized JSONL prediction telemetry."
+        ),
+    )
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://localhost:3000"],
         description="Allowed CORS origins for browser clients.",

@@ -26,6 +26,7 @@ def get_inference_service(request: Request) -> InferenceService:
         ),
         max_upload_bytes=settings.max_upload_bytes,
         max_image_dimension=settings.max_image_dimension,
+        monitor=getattr(request.app.state, "monitor", None),
     )
 
 

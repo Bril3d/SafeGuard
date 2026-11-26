@@ -27,7 +27,7 @@ WORKDIR /app
 
 RUN addgroup --system appgroup && \
     adduser --system --ingroup appgroup appuser && \
-    mkdir -p /app/models/production && \
+    mkdir -p /app/models/production /app/logs && \
     chown -R appuser:appgroup /app
 
 COPY --from=builder /opt/venv /opt/venv

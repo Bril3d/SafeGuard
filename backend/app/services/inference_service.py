@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 from backend.app.inference import DetectionResult, InferenceOutput, ONNXDetector
+from backend.app.monitoring import OperationalMonitor
 from backend.app.schemas import (
     ClassesResponse,
     ClassItemSchema,
@@ -161,11 +162,13 @@ class InferenceService:
         model_version: str,
         max_upload_bytes: int,
         max_image_dimension: int,
+        monitor: OperationalMonitor | None = None,
     ) -> None:
         self._detector = detector
         self.model_version = model_version
         self.max_upload_bytes = max_upload_bytes
         self.max_image_dimension = max_image_dimension
+        self.monitor = monitor
 
     def _require_detector(self) -> ONNXDetector:
         if self._detector is None:
@@ -287,6 +290,7 @@ class InferenceService:
         request_id: str,
         conf_threshold: float | None = None,
         iou_threshold: float | None = None,
+        route_label: str = "/predict",
     ) -> PredictResponse:
         """Validate image bytes and return structured detections and timings."""
         _, out, decode_ms, applied_conf, applied_iou = self._run_validated_inference(
@@ -295,6 +299,17 @@ class InferenceService:
             conf_threshold=conf_threshold,
             iou_threshold=iou_threshold,
         )
+        if self.monitor is not None:
+            self.monitor.record_prediction(
+                route=route_label,
+                status_code=200,
+                model_version=self.model_version,
+                inference_ms=out.timings_ms["inference_ms"],
+                image_width=out.image_width,
+                image_height=out.image_height,
+                detections=out.detections,
+                request_id=request_id,
+            )
         return self._build_predict_response(
             out, decode_ms, applied_conf, applied_iou, request_id
         )
@@ -306,6 +321,7 @@ class InferenceService:
         request_id: str,
         conf_threshold: float | None = None,
         iou_threshold: float | None = None,
+        route_label: str = "/predict/compliance",
     ) -> tuple[PredictResponse, np.ndarray]:
         """Run inference and also return decoded BGR frame for evidence snapshots."""
         image, out, decode_ms, applied_conf, applied_iou = (
@@ -316,6 +332,17 @@ class InferenceService:
                 iou_threshold=iou_threshold,
             )
         )
+        if self.monitor is not None:
+            self.monitor.record_prediction(
+                route=route_label,
+                status_code=200,
+                model_version=self.model_version,
+                inference_ms=out.timings_ms["inference_ms"],
+                image_width=out.image_width,
+                image_height=out.image_height,
+                detections=out.detections,
+                request_id=request_id,
+            )
         rgb = np.asarray(image, dtype=np.uint8)
         frame_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
         resp = self._build_predict_response(
@@ -330,6 +357,7 @@ class InferenceService:
         conf_threshold: float | None = None,
         iou_threshold: float | None = None,
         output_format: Literal["jpeg", "png"] = "jpeg",
+        request_id: str = "unknown",
     ) -> tuple[bytes, int, float, float]:
         """Run inference and return encoded annotated image bytes + headers metadata."""
         image, out, decode_ms, _, _ = self._run_validated_inference(
@@ -338,6 +366,17 @@ class InferenceService:
             conf_threshold=conf_threshold,
             iou_threshold=iou_threshold,
         )
+        if self.monitor is not None:
+            self.monitor.record_prediction(
+                route="/predict/visualize",
+                status_code=200,
+                model_version=self.model_version,
+                inference_ms=out.timings_ms["inference_ms"],
+                image_width=out.image_width,
+                image_height=out.image_height,
+                detections=out.detections,
+                request_id=request_id,
+            )
         encoded = annotate_image_bytes(
             image=image,
             detections=out.detections,

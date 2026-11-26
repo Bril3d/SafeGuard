@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: SafeGuard Dashboards
+    orgId: 1
+    folder: SafeGuard
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards

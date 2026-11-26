@@ -1,4 +1,4 @@
-name: Docker Build & Smoke Validation
+name: Docker Build, Smoke Test & CD Publish
 
 on:
   push:
@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
-  docker-validate:
-    name: Compose Config, Multi-Stage Builds & Container Smoke Tests
+  docker-validate-and-publish:
+    name: Compose Config, Multi-Stage Builds, Smoke Tests & GHCR CD
     runs-on: ubuntu-latest
 
     steps:
@@ -21,25 +25,47 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and verify multi-service Docker images
-        run: docker compose build
+      - name: Build multi-service Compose images
+        run: docker compose build backend frontend mlflow
 
-      - name: Start stack and run container smoke checks
+      - name: Build offline training Dockerfile and reclaim CI disk space
+        run: |
+          docker build -f docker/training.Dockerfile -t safeguard-training:ci .
+          docker rmi safeguard-training:ci
+          docker builder prune -af
+
+      - name: Start full stack and run container smoke checks
         run: |
           set -euo pipefail
-          docker compose up -d --no-build
+          docker compose up -d --no-build --wait
           trap 'docker compose logs; docker compose down' EXIT
 
-          for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:8000/health >/dev/null \
-              && curl -fsS http://127.0.0.1:3000/ >/dev/null \
-              && curl -fsS http://127.0.0.1:5000/health >/dev/null; then
-              break
-            fi
-            sleep 2
-          done
-
           curl -fsS http://127.0.0.1:8000/health | grep -q '"status":"ok"'
+          curl -fsS http://127.0.0.1:8000/metrics | grep -q 'safeguard_inference_requests_total'
           curl -fsS http://127.0.0.1:3000/api/health | grep -q '"status":"ok"'
           curl -fsS http://127.0.0.1:8000/docs >/dev/null
           curl -fsS http://127.0.0.1:5000/health >/dev/null
+          curl -fsS http://127.0.0.1:4200/api/health >/dev/null
+          curl -fsS http://127.0.0.1:9090/-/healthy >/dev/null
+          curl -fsS http://127.0.0.1:3001/api/health >/dev/null
+
+      - name: Log in to GitHub Container Registry (main push CD)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and push SafeGuard service images to GHCR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          SHORT_SHA="${GITHUB_SHA::7}"
+          for svc in backend frontend mlflow; do
+            docker tag "safeguard-${svc}:latest" "ghcr.io/${OWNER}/safeguard-${svc}:sha-${SHORT_SHA}"
+            docker tag "safeguard-${svc}:latest" "ghcr.io/${OWNER}/safeguard-${svc}:latest"
+            docker push "ghcr.io/${OWNER}/safeguard-${svc}:sha-${SHORT_SHA}"
+            docker push "ghcr.io/${OWNER}/safeguard-${svc}:latest"
+          done

@@ -23,6 +23,7 @@ mlruns/
 mlartifacts/
 mlflow.db
 runs/
+logs/
 *.zip
 *.tar.gz
 *.pt

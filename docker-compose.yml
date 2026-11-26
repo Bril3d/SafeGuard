@@ -15,9 +15,11 @@ services:
       SAFEGUARD_COMPLIANCE_CONFIRM_FRAMES: ${SAFEGUARD_COMPLIANCE_CONFIRM_FRAMES:-3}
       SAFEGUARD_COMPLIANCE_COOLDOWN_SECONDS: ${SAFEGUARD_COMPLIANCE_COOLDOWN_SECONDS:-10.0}
       SAFEGUARD_COMPLIANCE_CAPTURE_EVIDENCE: ${SAFEGUARD_COMPLIANCE_CAPTURE_EVIDENCE:-true}
+      SAFEGUARD_PREDICTION_LOG_PATH: ${SAFEGUARD_PREDICTION_LOG_PATH:-/app/logs/predictions.jsonl}
       SAFEGUARD_CORS_ORIGINS: ${SAFEGUARD_CORS_ORIGINS:-["http://localhost:3000","http://localhost:5173"]}
     volumes:
       - ./models/production:/app/models/production:ro
+      - monitoring_logs:/app/logs
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     networks:
@@ -69,8 +71,93 @@ services:
       start_period: 15s
     restart: unless-stopped
 
+  prefect:
+    image: prefecthq/prefect:3.9.5-python3.12
+    command: ["prefect", "server", "start", "--host", "0.0.0.0", "--port", "4200"]
+    environment:
+      PREFECT_SERVER_API_HOST: "0.0.0.0"
+      PREFECT_API_DATABASE_CONNECTION_URL: "sqlite+aiosqlite:////root/.prefect/prefect.db"
+    ports:
+      - "${PREFECT_PORT:-4200}:4200"
+    volumes:
+      - prefect_data:/root/.prefect
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4200/api/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 30s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9090/-/healthy"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-changeme-local-only}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    networks:
+      - safeguard_net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  training:
+    build:
+      context: .
+      dockerfile: docker/training.Dockerfile
+    profiles: ["training"]
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      PREFECT_API_URL: http://prefect:4200/api
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - monitoring_logs:/app/logs:ro
+    networks:
+      - safeguard_net
+
 volumes:
   mlflow_data:
+  prefect_data:
+  prometheus_data:
+  grafana_data:
+  monitoring_logs:
 
 networks:
   safeguard_net:

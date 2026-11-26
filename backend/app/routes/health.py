@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 
 from backend.app.routes.dependencies import InferenceServiceDep, SettingsDep
 from backend.app.schemas import ClassesResponse, HealthResponse, ModelMetadataResponse
@@ -55,3 +55,16 @@ def classes(
 ) -> ClassesResponse:
     """Return ordered canonical class IDs and names."""
     return service.get_classes()
+
+
+@router.get(
+    "/metrics",
+    summary="Prometheus operational metrics endpoint",
+)
+def prometheus_metrics(request: Request) -> Response:
+    """Expose Prometheus runtime latency, detection, and error counters."""
+    monitor = getattr(request.app.state, "monitor", None)
+    if monitor is None:
+        return Response(content="", media_type="text/plain; version=0.0.4")
+    payload, content_type = monitor.render_prometheus()
+    return Response(content=payload, media_type=content_type)

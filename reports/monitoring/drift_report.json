@@ -1,0 +1,32 @@
+{
+  "generated_at_utc": "2026-11-26T15:01:47.932574+00:00",
+  "assessment_scope": "proxy_statistical_only_without_ground_truth",
+  "reference_rows": 200,
+  "current_rows": 120,
+  "drift_share_threshold": 0.5,
+  "drifted_columns_count": 0,
+  "drifted_columns_share": 0.0,
+  "drift_detected": false,
+  "column_drifts": {
+    "confidence": {
+      "method": "K-S p_value",
+      "score": 0.812014,
+      "threshold": 0.05,
+      "drifted": false
+    },
+    "bbox_area_norm": {
+      "method": "K-S p_value",
+      "score": 0.695912,
+      "threshold": 0.05,
+      "drifted": false
+    },
+    "class_name": {
+      "method": "chi-square p_value",
+      "score": 0.085649,
+      "threshold": 0.05,
+      "drifted": false
+    }
+  },
+  "json_report_path": "reports\\monitoring\\drift_report.json",
+  "html_report_path": null
+}

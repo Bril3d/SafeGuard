@@ -96,6 +96,7 @@ def predict_visualize(
         conf_threshold=conf,
         iou_threshold=iou,
         output_format=output_format,
+        request_id=request_id,
     )
     media_type = "image/png" if output_format == "png" else "image/jpeg"
     logger.info(
@@ -148,6 +149,7 @@ def predict_frame(
         request_id=request_id,
         conf_threshold=conf,
         iou_threshold=iou,
+        route_label="/predict/frame",
     )
     logger.info(
         "request_id=%s route=/predict/frame frame_id=%s dets=%d "

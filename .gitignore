@@ -46,6 +46,9 @@ mlruns/
 mlartifacts/
 mlflow.db
 runs/
+logs/
+reports/monitoring/*.html
+reports/monitoring/*.jsonl
 
 # Frontend Node.js
 frontend/node_modules/
@@ -105,6 +108,9 @@ mlruns/
 mlartifacts/
 mlflow.db
 runs/
+logs/
+reports/monitoring/*.html
+reports/monitoring/*.jsonl
 
 # Frontend Node.js
 frontend/node_modules/
