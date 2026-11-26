@@ -1,97 +1,193 @@
-import { useCallback, useEffect, useState } from 'react';
-import { fetchHealth, getApiBaseUrl } from './services/api';
-import type { HealthResponse } from './types/api';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { AppShell } from './components/layout/AppShell';
+import { AlertHistoryPage } from './components/pages/AlertHistoryPage';
+import { ExampleGalleryPage } from './components/pages/ExampleGalleryPage';
+import { ImageAnalysisPage } from './components/pages/ImageAnalysisPage';
+import { LiveMonitoringPage } from './components/pages/LiveMonitoringPage';
+import { ModelMonitoringPage } from './components/pages/ModelMonitoringPage';
+import { OverviewPage } from './components/pages/OverviewPage';
+import { SettingsPage } from './components/pages/SettingsPage';
 
-type HealthState =
-  | { status: 'loading' }
-  | { status: 'ready'; data: HealthResponse }
-  | { status: 'error'; message: string };
+const AnalyticsPage = lazy(() =>
+  import('./components/pages/AnalyticsPage').then((mod) => ({
+    default: mod.AnalyticsPage,
+  })),
+);
+import { useSessionTelemetry } from './hooks/useSessionTelemetry';
+import { fetchClasses, fetchHealth, fetchModelMetadata } from './services/api';
+import type {
+  ClassesResponse,
+  HealthResponse,
+  ModelMetadataResponse,
+} from './types/api';
+import type { InferenceConfigState, PageId } from './types/monitoring';
 
 export function App() {
-  const [health, setHealth] = useState<HealthState>({ status: 'loading' });
+  const [activePage, setActivePage] = useState<PageId>('overview');
+  const [health, setHealth] = useState<HealthResponse | null>(null);
+  const [healthLoading, setHealthLoading] = useState(true);
+  const [healthError, setHealthError] = useState<string | null>(null);
+  const [metadata, setMetadata] = useState<ModelMetadataResponse | null>(null);
+  const [classes, setClasses] = useState<ClassesResponse | null>(null);
+  const [metadataError, setMetadataError] = useState<string | null>(null);
+  const [liveActive, setLiveActive] = useState(false);
 
-  const loadHealth = useCallback(async (signal?: AbortSignal) => {
-    setHealth({ status: 'loading' });
-    try {
-      const data = await fetchHealth(signal);
-      setHealth({ status: 'ready', data });
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        return;
-      }
-      const message =
-        err instanceof Error ? err.message : 'Unable to reach SafeGuard API';
-      setHealth({ status: 'error', message });
+  const [config, setConfig] = useState<InferenceConfigState>({
+    confThreshold: 0.25,
+    iouThreshold: 0.50,
+    liveCaptureIntervalMs: 250,
+    enableComplianceOnLive: true,
+  });
+
+  const {
+    records,
+    alerts,
+    stats,
+    setLiveFps,
+    recordSuccess,
+    recordError,
+    updateAlertReview,
+    resetSession,
+  } = useSessionTelemetry();
+
+  const loadBackendState = useCallback(async (signal?: AbortSignal) => {
+    setHealthLoading(true);
+    setHealthError(null);
+    setMetadataError(null);
+
+    const [hRes, mRes, cRes] = await Promise.allSettled([
+      fetchHealth(signal),
+      fetchModelMetadata(signal),
+      fetchClasses(signal),
+    ]);
+
+    if (signal?.aborted) return;
+
+    if (hRes.status === 'fulfilled') {
+      setHealth(hRes.value);
+    } else {
+      setHealth(null);
+      setHealthError(
+        hRes.reason instanceof Error
+          ? hRes.reason.message
+          : 'Unable to reach SafeGuard API',
+      );
     }
+
+    if (mRes.status === 'fulfilled') {
+      setMetadata(mRes.value);
+    } else {
+      setMetadata(null);
+      setMetadataError(
+        mRes.reason instanceof Error ? mRes.reason.message : 'Metadata unavailable',
+      );
+    }
+
+    if (cRes.status === 'fulfilled') {
+      setClasses(cRes.value);
+    } else {
+      setClasses(null);
+    }
+
+    setHealthLoading(false);
   }, []);
 
   useEffect(() => {
     const controller = new AbortController();
-    void loadHealth(controller.signal);
+    void loadBackendState(controller.signal);
     return () => controller.abort();
-  }, [loadHealth]);
+  }, [loadBackendState]);
+
+  const pendingAlertCount = alerts.filter(
+    (a) => a.reviewStatus === 'pending_review',
+  ).length;
 
   return (
-    <main className="container">
-      <div className="card">
-        <h1>SafeGuard</h1>
-        <p>
-          Real-Time Construction PPE Monitoring — Repository Foundation Shell
-          (Axis 3)
-        </p>
+    <AppShell
+      activePage={activePage}
+      onNavigate={setActivePage}
+      health={health}
+      healthLoading={healthLoading}
+      healthError={healthError}
+      onRefreshHealth={() => void loadBackendState()}
+      stats={stats}
+      pendingAlertCount={pendingAlertCount}
+      liveActive={liveActive}
+    >
+      {activePage === 'overview' ? (
+        <OverviewPage
+          health={health}
+          metadata={metadata}
+          stats={stats}
+          alerts={alerts}
+          recentRecords={records}
+          config={config}
+          onNavigate={setActivePage}
+        />
+      ) : null}
 
-        <p>
-          API Endpoint: <code>{getApiBaseUrl()}/health</code>
-        </p>
+      {activePage === 'live' ? (
+        <LiveMonitoringPage
+          config={config}
+          onLiveActiveChange={setLiveActive}
+          onRecordSuccess={recordSuccess}
+          onRecordError={recordError}
+          onFpsChange={setLiveFps}
+        />
+      ) : null}
 
-        {health.status === 'loading' && (
-          <span className="badge badge-warn">Checking backend health...</span>
-        )}
+      {activePage === 'image' ? (
+        <ImageAnalysisPage
+          config={config}
+          onRecordSuccess={recordSuccess}
+          onRecordError={recordError}
+        />
+      ) : null}
 
-        {health.status === 'error' && (
-          <div>
-            <span className="badge badge-err">Backend Unreachable</span>
-            <p>{health.message}</p>
-          </div>
-        )}
+      {activePage === 'gallery' ? (
+        <ExampleGalleryPage
+          config={config}
+          onRecordSuccess={recordSuccess}
+          onRecordError={recordError}
+        />
+      ) : null}
 
-        {health.status === 'ready' && (
-          <div>
-            <span className="badge badge-ok">
-              API Status: {health.data.status}
-            </span>
-            <div className="grid">
-              <div className="kv">
-                <div className="kv-label">Service</div>
-                <div className="kv-value">{health.data.service}</div>
-              </div>
-              <div className="kv">
-                <div className="kv-label">Environment</div>
-                <div className="kv-value">{health.data.environment}</div>
-              </div>
-              <div className="kv">
-                <div className="kv-label">Model Loaded</div>
-                <div className="kv-value">
-                  {health.data.model_loaded ? 'Yes' : 'No (Foundation Phase)'}
-                </div>
-              </div>
-              <div className="kv">
-                <div className="kv-label">Runtime Provider</div>
-                <div className="kv-value">{health.data.runtime_provider}</div>
-              </div>
+      {activePage === 'alerts' ? (
+        <AlertHistoryPage alerts={alerts} onUpdateReview={updateAlertReview} />
+      ) : null}
+
+      {activePage === 'analytics' ? (
+        <Suspense
+          fallback={
+            <div className="rounded border border-[#D1D5DB] bg-white p-6 text-xs text-[#475569]">
+              Loading analytics charts...
             </div>
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => void loadHealth()}
-          disabled={health.status === 'loading'}
+          }
         >
-          Refresh Health Check
-        </button>
-      </div>
-    </main>
+          <AnalyticsPage records={records} stats={stats} />
+        </Suspense>
+      ) : null}
+
+      {activePage === 'monitoring' ? (
+        <ModelMonitoringPage
+          health={health}
+          healthError={healthError}
+          stats={stats}
+          records={records}
+        />
+      ) : null}
+
+      {activePage === 'settings' ? (
+        <SettingsPage
+          metadata={metadata}
+          classes={classes}
+          metadataError={metadataError}
+          config={config}
+          onConfigChange={setConfig}
+          onResetSession={resetSession}
+        />
+      ) : null}
+    </AppShell>
   );
 }
 
