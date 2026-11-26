@@ -178,6 +178,7 @@ class PersonAssociationSchema(StrictSchema):
     overall_status: str
     uncertainty_reasons: list[str]
     violation_streak: int = Field(ge=0)
+    visibility_status: str = Field(default="sufficient")
 
 
 class ComplianceEventSchema(StrictSchema):
@@ -194,6 +195,10 @@ class ComplianceEventSchema(StrictSchema):
     bbox_xyxy: list[float] = Field(min_length=4, max_length=4)
     requires_human_review: bool
     message: str
+    violation_category: str = Field(default="no_helmet")
+    event_status: str = Field(default="pending_review")
+    evidence_bbox_xyxy: list[float] | None = None
+    evidence_frame_b64: str | None = None
 
 
 class ComplianceSummarySchema(StrictSchema):
@@ -206,6 +211,9 @@ class ComplianceSummarySchema(StrictSchema):
     unknown_count: int = Field(ge=0)
     emitted_event_count: int = Field(ge=0)
     suppressed_duplicates: int = Field(ge=0)
+    uncertain_count: int = Field(default=0, ge=0)
+    insufficient_visibility_count: int = Field(default=0, ge=0)
+    lost_tracks_count: int = Field(default=0, ge=0)
 
 
 class ComplianceMonitorResponse(StrictSchema):
@@ -221,6 +229,7 @@ class ComplianceMonitorResponse(StrictSchema):
     timestamp: float
     detections: list[DetectionSchema]
     tracks: list[TrackSchema]
+    lost_tracks: list[TrackSchema] = Field(default_factory=list)
     associations: list[PersonAssociationSchema]
     unmatched_ppe: list[DetectionSchema]
     events: list[ComplianceEventSchema]
@@ -235,3 +244,58 @@ class ComplianceResetResponse(StrictSchema):
     stream_id: str
     reset: bool
     message: str
+
+
+class AlertTimelinePointSchema(StrictSchema):
+    """Chronological point representing a generated alert event."""
+
+    timestamp: float
+    frame_index: int = Field(ge=1)
+    event_id: str
+    track_id: int = Field(ge=1)
+    violation_category: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    event_status: str
+
+
+class StreamAnalyticsResponse(StrictSchema):
+    """Cumulative analytics snapshot for a monitoring stream."""
+
+    stream_id: str
+    frames_processed: int = Field(ge=0)
+    workers_observed: int = Field(ge=0)
+    active_workers: int = Field(ge=0)
+    lost_workers: int = Field(ge=0)
+    ppe_detections: dict[str, int]
+    compliance_states: dict[str, int]
+    potential_violations: int = Field(ge=0)
+    alerts_emitted: int = Field(ge=0)
+    suppressed_duplicates: int = Field(ge=0)
+    violation_categories: dict[str, int]
+    alerts_over_time: list[AlertTimelinePointSchema]
+
+
+class ComplianceAlertsResponse(StrictSchema):
+    """Retained alert list for a monitoring stream."""
+
+    stream_id: str
+    total_retained: int = Field(ge=0)
+    events: list[ComplianceEventSchema]
+
+
+class AlertStatusUpdateRequest(StrictSchema):
+    """Human review / status transition payload."""
+
+    event_status: str = Field(
+        description=(
+            "Updated status: pending_review, acknowledged, "
+            "verified_potential_event, dismissed_false_alarm, or resolved."
+        )
+    )
+
+
+class AlertStatusUpdateResponse(StrictSchema):
+    """Updated compliance alert payload."""
+
+    stream_id: str
+    event: ComplianceEventSchema

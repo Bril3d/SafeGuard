@@ -1,70 +1,71 @@
-# SafeGuard Compliance Engine Architecture
+# SafeGuard Compliance Engine, Alerts & Analytics Architecture
 
-**Module**: `src/compliance/rules.py`  
+**Modules**: `src/compliance/rules.py`, `src/compliance/alerts.py`, `src/compliance/analytics.py`  
 **Service Wrapper**: `backend/app/services/compliance_service.py`  
-**Route**: `POST /predict/compliance`, `POST /compliance/reset`
+**Routes**: `POST /predict/compliance`, `GET /compliance/alerts`, `PATCH /compliance/alerts/{event_id}`, `GET /compliance/analytics`, `POST /compliance/reset`
 
 ---
 
-## 1. End-to-End Decision-Support Pipeline
+## 1. Strictly Separated 4-Stage Pipeline
 
 ```text
-Frame (UploadFile)
-  -> InferenceService (singleton ONNXDetector, opset 17 YOLO11s)
-  -> ByteTrackTracker (anonymous person tracks across frames)
-  -> Geometric Person-to-PPE Association (head, torso, hands/arms zones)
-  -> Compliance Rules & State Evaluation
-  -> Temporal Confirmation (N consecutive frames) & Cooldown Deduplication
-  -> Structured ComplianceEvent (potential_event_requires_human_review)
+Stage 1: Raw Model Detections (ONNXDetector -> DetectionInput + Taxonomy Gate)
+   │
+   ▼
+Stage 2: Anonymous Worker Tracking (ByteTrackTracker -> active, lost, retired tracks)
+   │
+   ▼
+Stage 3: Spatial Association & Compliance Interpretation (ComplianceInterpreter)
+   │
+   ▼
+Stage 4: Alert Generation & Stream Analytics (AlertManager + StreamAnalyticsTracker)
 ```
 
-- Raw detections (`DetectionInput`), person-to-PPE geometric associations (`PersonPPEAssociation`), and derived alerts (`ComplianceEvent`) are strictly separated schemas (`backend/app/schemas.py`).
-- Existing stateless inference endpoints (`/health`, `/model/metadata`, `/classes`, `/predict`, `/predict/visualize`, `/predict/frame`) remain completely unchanged.
+1. **Raw Model Detections (`DetectionInput` / `load_approved_class_names`)**:
+   - Validates finite bounding-box coordinates (`x2 > x1`, `y2 > y1`), confidence bounds `[0.0, 1.0]`, and dynamically enforces approved canonical classes from `configs/class_mapping.yaml` (`person`, `helmet`, `vest`, `gloves`, `no_helmet`). Unapproved or candidate classes (such as `no_vest` or `head`) are filtered and counted (`unapproved_detections_filtered`), never reaching compliance or alert rules.
+2. **Worker Tracking (`ByteTrackTracker`)**:
+   - Assigns stream-scoped anonymous IDs only (`track_id`), handling temporary occlusion recovery (`lost_tracks`) and clean expiration (`retired_track_ids`).
+3. **PPE Compliance Interpretation (`ComplianceInterpreter`)**:
+   - Runs optimal 1-to-1 bipartite matching (`_optimal_bipartite_assign`) for unique PPE items (`helmet`, `no_helmet`, `vest`) and multi-hand matching for `gloves`, guarded by `spatial_ambiguity_margin` and box-visibility checks.
+4. **Alert Generation & Analytics (`AlertManager`, `StreamAnalyticsTracker`)**:
+   - Confirms explicit missing-PPE violations across `confirm_frames` uninterrupted active frames, enforces per-`(track_id, violation_category)` cooldown & duplicate suppression, renders annotated JPEG evidence snapshots (`evidence_frame_b64`) when a violation is triggered, manages `event_status` lifecycle (`pending_review`, `acknowledged`, `verified_potential_event`, `dismissed_false_alarm`, `resolved`), and aggregates stream analytics (`workers_observed`, `ppe_detections`, `potential_violations`, `alerts_over_time`, `violation_categories`).
 
 ---
 
-## 2. Canonical Taxonomy & Strict Alert Rule
+## 2. Compliance State Semantics & Decision-Support Boundaries
 
-SafeGuard's canonical `EXP-E` detector predicts `5` classes (`configs/class_mapping.yaml`):
-`0: person`, `1: helmet`, `2: vest`, `3: gloves`, `4: no_helmet`.
-
-1. **Missing PPE != Automatic Violation**:
-   - Because `no_vest` (`pending_approval`) and `no_gloves` are **not** trained classes in `EXP-E`, absence of a positive `vest` or `gloves` detection **never** emits a violation alert. When no `vest` is matched to a person, `vest_status` is set to `"unknown"` (`uncertainty_reasons: ["vest_not_detected_no_vest_class_untrained"]`) and `overall_status` drops to `"unknown"`.
-   - When neither `helmet` nor `no_helmet` is observed inside a person's head zone, `helmet_status` is `"unknown"` (`"head_ppe_not_observed"`).
-2. **Explicit Missing-Helmet Trigger Only**:
-   - Only an explicit `no_helmet` detection matched geometrically to a tracked person's head zone sets `helmet_status = "violation"`.
-3. **Conflict / Ambiguity Handling**:
-   - If both `helmet` and `no_helmet` overlap the same person's head zone within `ambiguous_margin` (default `0.15` confidence delta), `helmet_status` is marked `"ambiguous"` and `overall_status` is set to `"unknown"` rather than asserting a false violation.
-4. **Decision-Support Boundary**:
-   - Every emitted alert uses `event_type = "potential_no_helmet"` and `requires_human_review = True`. SafeGuard does not issue autonomous sanctions or certify workplace compliance.
+- **Missing Positive PPE Is Never Proof of Absence**:
+  - Because `no_vest` (`pending_approval`) and `no_gloves` are **not** trained classes in `EXP-E`, an undetected `vest` sets `vest_status = "unknown"` (`"vest_not_detected_no_vest_class_untrained"`), never a violation.
+  - An undetected `helmet` sets `helmet_status = "unknown"` (`"head_ppe_not_observed"`).
+- **`insufficient_visibility`**:
+  - Triggered when a person silhouette is too small (`height < min_person_height_px` or `width < min_person_width_px`), currently occluded (`track.state == "lost"`), or has its head/upper region clipped along the top image border (`y1 <= edge_clip_margin_px`). Resets violation confirmation streaks so distant or partial silhouettes do not generate false alerts.
+- **`uncertain` / `ambiguous`**:
+  - Triggered when conflicting `helmet` and `no_helmet` boxes overlap the same person within `ambiguous_margin` (`helmet_status = "ambiguous"`, `overall_status = "unknown"`), or when a single PPE detection sits equidistantly inside the overlapping zones of multiple adjacent workers within `spatial_ambiguity_margin` without disambiguating competing boxes (`overall_status = "uncertain"`, `"ambiguous_spatial_overlap"`).
+- **Alert Trigger Rule**:
+  - Only explicit `no_helmet` detections reliably associated with a sufficiently visible worker for `confirm_frames` consecutive active frames emit a `potential_no_helmet` event (`violation_category = "no_helmet"`, `requires_human_review = True`). Occluded or intermittent frame gaps reset the streak.
 
 ---
 
 ## 3. Spatial Association Geometry
 
-PPE detections are assigned 1-to-1 to the highest-scoring tracked person (`_assign_ppe_to_best_person`) using normalized containment inside body zones derived from each person's `[px1, py1, px2, py2]` box (`pw = px2 - px1`, `ph = py2 - py1`):
-- **Head zone** (`helmet`, `no_helmet`): `[px1 - 0.12*pw, py1 - 0.18*ph, px2 + 0.12*pw, py1 + 0.42*ph]`, requiring containment `>= min_head_containment` (`0.45`) and `(ppe_area / person_area) <= max_head_person_area_ratio` (`0.55`).
-- **Torso zone** (`vest`): `[px1 - 0.06*pw, py1 + 0.10*ph, px2 + 0.06*pw, py1 + 0.80*ph]`, requiring containment `>= min_torso_containment` (`0.40`).
-- **Arms/hands zone** (`gloves`): `[px1 - 0.18*pw, py1 + 0.10*ph, px2 + 0.18*pw, py2 + 0.06*ph]`, requiring containment `>= min_gloves_containment` (`0.35`).
-- PPE boxes without any qualifying person host are retained in `unmatched_ppe`.
+PPE detections are matched inside anatomical zones derived from each tracked `[px1, py1, px2, py2]` box (`pw = px2 - px1`, `ph = py2 - py1`):
+
+| Region | Classes | Relative Bounds | Min Containment | Extra Guard |
+|---|---|---|---:|---|
+| Head zone | `helmet`, `no_helmet` | `[px1-0.12*pw, py1-0.18*ph, px2+0.12*pw, py1+0.42*ph]` | `0.45` | `ppe_area / person_area <= 0.55`; 1-to-1 + overlap ambiguity check |
+| Torso zone | `vest` | `[px1-0.06*pw, py1+0.10*ph, px2+0.06*pw, py1+0.80*ph]` | `0.40` | 1-to-1 + overlap ambiguity check |
+| Hands/arms zone | `gloves` | `[px1-0.18*pw, py1+0.10*ph, px2+0.18*pw, py2+0.06*ph]` | `0.35` | Multi-item assignment (up to pair of gloves) |
 
 ---
 
-## 4. Temporal Confirmation, Cooldown & Configuration
+## 4. Known Spatial Association & Compliance Limitations
 
-Configurable via `ComplianceConfig` (`src/compliance/rules.py`) and `SAFEGUARD_COMPLIANCE_*` settings (`backend/app/config.py`):
-
-| Parameter | Default | Purpose |
-|---|---:|---|
-| `confirm_frames` | `3` | Consecutive frames with `no_helmet` required per `track_id` before emitting an event (`pending_confirmation` prior to confirmation). |
-| `cooldown_seconds` | `10.0` | Minimum interval between emitted `potential_no_helmet` events for the same `(track_id, event_type)`. |
-| `ambiguous_margin` | `0.15` | Confidence difference threshold below which conflicting `helmet` + `no_helmet` is `"ambiguous"`. |
-| `conf_person` / `conf_helmet` / `conf_vest` / `conf_gloves` / `conf_no_helmet` | `0.25` | Minimum class confidence filters. |
-
----
-
-## 5. Known Limitations & Assumptions
-
-- Assumes upright or semi-upright worker silhouettes (head inside upper ~40% + overhang, vest inside middle ~70%); extreme camera tilts or horizontal postures may place PPE in `unmatched_ppe` / `"unknown"`.
-- Because `roboflow_v30` and `ultralytics_ppe` test sets revealed modest `no_helmet` recall (`0.56–0.57`) and high small-object miss rates, distant workers frequently remain `"unknown"` rather than emitting alerts.
-- Synthetic unit tests verify rule transitions, geometry, confirmation, and cooldown determinism only and do not represent real-world site accuracy.
+1. **Upright-Posture & Camera-Angle Bias**:
+   - The head/torso/gloves zones assume approximately upright workers viewed from eye-level or elevated oblique CCTV angles. Workers bending deeply forward, kneeling, crouching below scaffolding, or viewed from near-overhead cameras can place a worn helmet outside the upper 42% box fraction, causing valid PPE to land in `unmatched_ppe` and the worker to report `"unknown"`.
+2. **2D Depth Overlap Confusion**:
+   - Even with 1-to-1 Hungarian matching and `spatial_ambiguity_margin`, severe front-to-back 2D overlap (one worker standing directly in front of another without depth sensing) can leave one worker occluded or trigger `"uncertain"` states (`ambiguous_spatial_overlap`), intentionally trading recall for low false-accusation risk.
+3. **Cross-Dataset `no_helmet` Box Geometry Variance**:
+   - Roboflow `NO-Hardhat` annotations often frame only the upper hairline/crown while Ultralytics `no_helmet` frames the full head/face; small-object recall for `no_helmet` (`0.56–0.57` on test splits) limits detection distance in wide-angle site views.
+4. **Temporal & Privacy Trade-offs**:
+   - Fixed `confirm_frames` translates to different wall-clock durations depending on client FPS (e.g., 3 frames = 0.6s at 5 FPS vs 0.1s at 30 FPS).
+   - Annotated evidence frames (`evidence_frame_b64`) are bounded in memory per stream and annotated only for review of triggered alerts; SafeGuard never runs facial recognition, worker identification, or continuous raw video recording.

@@ -29,18 +29,18 @@ def get_inference_service(request: Request) -> InferenceService:
     )
 
 
-def get_compliance_service(request: Request) -> CompliancePipelineService:
-    """Retrieve singleton CompliancePipelineService initialized in lifespan."""
-    existing = getattr(request.app.state, "compliance_service", None)
-    if existing is not None:
-        return existing
-    settings = get_settings()
+def build_compliance_service(
+    settings: Settings, inference_service: InferenceService
+) -> CompliancePipelineService:
+    """Construct CompliancePipelineService consistently from runtime settings."""
     return CompliancePipelineService(
-        inference_service=get_inference_service(request),
+        inference_service=inference_service,
         compliance_config=ComplianceConfig(
             confirm_frames=settings.compliance_confirm_frames,
             cooldown_seconds=settings.compliance_cooldown_seconds,
             ambiguous_margin=settings.compliance_ambiguous_margin,
+            spatial_ambiguity_margin=settings.compliance_spatial_ambiguity_margin,
+            capture_evidence=settings.compliance_capture_evidence,
         ),
         tracker_config=TrackerConfig(
             high_conf_threshold=settings.tracker_high_conf,
@@ -49,6 +49,15 @@ def get_compliance_service(request: Request) -> CompliancePipelineService:
             max_age=settings.tracker_max_age,
         ),
     )
+
+
+def get_compliance_service(request: Request) -> CompliancePipelineService:
+    """Retrieve singleton CompliancePipelineService initialized in lifespan."""
+    existing = getattr(request.app.state, "compliance_service", None)
+    if existing is not None:
+        return existing
+    settings = get_settings()
+    return build_compliance_service(settings, get_inference_service(request))
 
 
 def get_request_id(request: Request) -> str:

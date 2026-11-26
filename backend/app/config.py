@@ -67,6 +67,20 @@ class Settings(BaseSettings):
             "Confidence margin within which conflicting helmet/no_helmet is ambiguous."
         ),
     )
+    compliance_spatial_ambiguity_margin: float = Field(
+        default=0.08,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "Minimum spatial score margin required between overlapping workers."
+        ),
+    )
+    compliance_capture_evidence: bool = Field(
+        default=True,
+        description=(
+            "Whether emitted alert events include an annotated JPEG evidence frame."
+        ),
+    )
     tracker_max_age: int = Field(
         default=15,
         ge=1,

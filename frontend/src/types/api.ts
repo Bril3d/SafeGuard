@@ -106,6 +106,7 @@ export interface PersonAssociationSchema {
   overall_status: string;
   uncertainty_reasons: string[];
   violation_streak: number;
+  visibility_status?: string;
 }
 
 export interface ComplianceEventSchema {
@@ -120,6 +121,10 @@ export interface ComplianceEventSchema {
   bbox_xyxy: [number, number, number, number];
   requires_human_review: boolean;
   message: string;
+  violation_category?: string;
+  event_status?: string;
+  evidence_bbox_xyxy?: [number, number, number, number] | null;
+  evidence_frame_b64?: string | null;
 }
 
 export interface ComplianceSummarySchema {
@@ -130,6 +135,9 @@ export interface ComplianceSummarySchema {
   unknown_count: number;
   emitted_event_count: number;
   suppressed_duplicates: number;
+  uncertain_count?: number;
+  insufficient_visibility_count?: number;
+  lost_tracks_count?: number;
 }
 
 export interface ComplianceMonitorResponse {
@@ -143,6 +151,7 @@ export interface ComplianceMonitorResponse {
   timestamp: number;
   detections: DetectionSchema[];
   tracks: TrackSchema[];
+  lost_tracks?: TrackSchema[];
   associations: PersonAssociationSchema[];
   unmatched_ppe: DetectionSchema[];
   events: ComplianceEventSchema[];

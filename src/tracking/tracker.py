@@ -44,6 +44,16 @@ class Track:
     state: str
 
 
+@dataclass(frozen=True)
+class TrackingStepResult:
+    """Per-frame tracking snapshot separating active, lost, and retired tracks."""
+
+    frame_index: int
+    active_tracks: list[Track]
+    lost_tracks: list[Track]
+    retired_track_ids: list[int]
+
+
 @dataclass
 class _InternalTrackState:
     """Internal kinematic state using center-size coordinates and velocity."""
@@ -122,11 +132,12 @@ class _InternalTrackState:
         ]
 
     def to_public(self, min_hits: int) -> Track:
-        state_label = (
-            "active"
-            if self.time_since_update == 0 and self.hits >= min_hits
-            else "lost"
-        )
+        if self.time_since_update == 0 and self.hits >= min_hits:
+            state_label = "active"
+        elif self.time_since_update == 0:
+            state_label = "tentative"
+        else:
+            state_label = "lost"
         return Track(
             track_id=self.track_id,
             bbox_xyxy=self.to_xyxy(),
@@ -222,20 +233,30 @@ class ByteTrackTracker:
     _tracks: list[_InternalTrackState] = field(default_factory=list, init=False)
     _next_id: int = field(default=1, init=False)
     _frame_index: int = field(default=0, init=False)
+    _last_retired_ids: list[int] = field(default_factory=list, init=False)
 
     @property
     def active_track_count(self) -> int:
         """Number of currently retained tracks (active + within max_age)."""
         return len(self._tracks)
 
+    def get_lost_tracks(self) -> list[Track]:
+        """Return currently occluded/missing tracks retained within max_age."""
+        return [
+            trk.to_public(self.config.min_hits)
+            for trk in self._tracks
+            if trk.time_since_update > 0
+        ]
+
     def reset(self) -> None:
         """Clear all active and lost tracks for a stream."""
         self._tracks.clear()
         self._next_id = 1
         self._frame_index = 0
+        self._last_retired_ids.clear()
 
-    def update(self, detections: list[TrackDetection]) -> list[Track]:
-        """Advance tracker one frame and return matched active anonymous tracks."""
+    def step(self, detections: list[TrackDetection]) -> TrackingStepResult:
+        """Advance tracker one frame and expose active, lost, and retired tracks."""
         self._frame_index += 1
         for trk in self._tracks:
             trk.predict()
@@ -277,13 +298,34 @@ class ByteTrackTracker:
             self._next_id += 1
             self._tracks.append(new_trk)
 
-        # Expire tracks beyond max_age occlusion budget.
-        self._tracks = [
-            trk for trk in self._tracks if trk.time_since_update <= self.config.max_age
-        ]
+        # Retire tracks beyond max_age occlusion budget without ID reuse.
+        retained: list[_InternalTrackState] = []
+        retired_ids: list[int] = []
+        for trk in self._tracks:
+            if trk.time_since_update <= self.config.max_age:
+                retained.append(trk)
+            else:
+                retired_ids.append(trk.track_id)
+        self._tracks = retained
+        self._last_retired_ids = retired_ids
 
-        return [
+        active_tracks = [
             trk.to_public(self.config.min_hits)
             for trk in self._tracks
             if trk.time_since_update == 0 and trk.hits >= self.config.min_hits
         ]
+        lost_tracks = [
+            trk.to_public(self.config.min_hits)
+            for trk in self._tracks
+            if trk.time_since_update > 0
+        ]
+        return TrackingStepResult(
+            frame_index=self._frame_index,
+            active_tracks=active_tracks,
+            lost_tracks=lost_tracks,
+            retired_track_ids=retired_ids,
+        )
+
+    def update(self, detections: list[TrackDetection]) -> list[Track]:
+        """Advance tracker one frame and return matched active anonymous tracks."""
+        return self.step(detections).active_tracks

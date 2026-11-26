@@ -245,21 +245,14 @@ class InferenceService:
         )
         return image, out, decode_ms, applied_conf, applied_iou
 
-    def predict(
+    def _build_predict_response(
         self,
-        payload: bytes,
-        content_type: str | None,
+        out: InferenceOutput,
+        decode_ms: float,
+        applied_conf: float,
+        applied_iou: float,
         request_id: str,
-        conf_threshold: float | None = None,
-        iou_threshold: float | None = None,
     ) -> PredictResponse:
-        """Validate image bytes and return structured detections and timings."""
-        _, out, decode_ms, applied_conf, applied_iou = self._run_validated_inference(
-            payload=payload,
-            content_type=content_type,
-            conf_threshold=conf_threshold,
-            iou_threshold=iou_threshold,
-        )
         total_ms = decode_ms + out.timings_ms["end_to_end_ms"]
         return PredictResponse(
             request_id=request_id,
@@ -286,6 +279,49 @@ class InferenceService:
                 total_ms=round(total_ms, 3),
             ),
         )
+
+    def predict(
+        self,
+        payload: bytes,
+        content_type: str | None,
+        request_id: str,
+        conf_threshold: float | None = None,
+        iou_threshold: float | None = None,
+    ) -> PredictResponse:
+        """Validate image bytes and return structured detections and timings."""
+        _, out, decode_ms, applied_conf, applied_iou = self._run_validated_inference(
+            payload=payload,
+            content_type=content_type,
+            conf_threshold=conf_threshold,
+            iou_threshold=iou_threshold,
+        )
+        return self._build_predict_response(
+            out, decode_ms, applied_conf, applied_iou, request_id
+        )
+
+    def predict_with_frame(
+        self,
+        payload: bytes,
+        content_type: str | None,
+        request_id: str,
+        conf_threshold: float | None = None,
+        iou_threshold: float | None = None,
+    ) -> tuple[PredictResponse, np.ndarray]:
+        """Run inference and also return decoded BGR frame for evidence snapshots."""
+        image, out, decode_ms, applied_conf, applied_iou = (
+            self._run_validated_inference(
+                payload=payload,
+                content_type=content_type,
+                conf_threshold=conf_threshold,
+                iou_threshold=iou_threshold,
+            )
+        )
+        rgb = np.asarray(image, dtype=np.uint8)
+        frame_bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+        resp = self._build_predict_response(
+            out, decode_ms, applied_conf, applied_iou, request_id
+        )
+        return resp, frame_bgr
 
     def predict_and_visualize(
         self,

@@ -315,6 +315,8 @@ def test_openapi_docs_and_paths_accessible(monkeypatch) -> None:
             "/predict/visualize",
             "/predict/frame",
             "/predict/compliance",
+            "/compliance/alerts",
+            "/compliance/analytics",
             "/compliance/reset",
         ):
             assert expected in paths
@@ -384,8 +386,12 @@ def test_predict_compliance_pipeline_temporal_confirmation_and_cooldown(
             d3 = r3.json()
             assert d3["summary"]["potential_violation_count"] == 1
             assert d3["summary"]["emitted_event_count"] == 1
-            assert d3["events"][0]["event_type"] == "potential_no_helmet"
-            assert d3["events"][0]["requires_human_review"] is True
+            evt_json = d3["events"][0]
+            assert evt_json["event_type"] == "potential_no_helmet"
+            assert evt_json["violation_category"] == "no_helmet"
+            assert evt_json["event_status"] == "pending_review"
+            assert evt_json["requires_human_review"] is True
+            assert evt_json["evidence_frame_b64"] is not None
 
             # Frame 4 inside 10s cooldown -> suppressed duplicate.
             r4 = client.post(
@@ -395,6 +401,44 @@ def test_predict_compliance_pipeline_temporal_confirmation_and_cooldown(
             assert r4.status_code == 200
             assert r4.json()["summary"]["emitted_event_count"] == 0
             assert r4.json()["summary"]["suppressed_duplicates"] == 1
+
+            # Verify /compliance/alerts, PATCH status, and /compliance/analytics
+            alerts_res = client.get("/compliance/alerts?stream_id=gate-1")
+            assert alerts_res.status_code == 200
+            assert alerts_res.json()["total_retained"] == 1
+            evt_id = alerts_res.json()["events"][0]["event_id"]
+
+            patch_ok = client.patch(
+                f"/compliance/alerts/{evt_id}?stream_id=gate-1",
+                json={"event_status": "verified_potential_event"},
+            )
+            assert patch_ok.status_code == 200
+            assert (
+                patch_ok.json()["event"]["event_status"] == "verified_potential_event"
+            )
+
+            patch_bad_status = client.patch(
+                f"/compliance/alerts/{evt_id}?stream_id=gate-1",
+                json={"event_status": "invalid_status"},
+            )
+            assert patch_bad_status.status_code == 400
+
+            patch_missing = client.patch(
+                "/compliance/alerts/evt-999999?stream_id=gate-1",
+                json={"event_status": "resolved"},
+            )
+            assert patch_missing.status_code == 404
+
+            analytics_res = client.get("/compliance/analytics?stream_id=gate-1")
+            assert analytics_res.status_code == 200
+            analytics_json = analytics_res.json()
+            assert analytics_json["frames_processed"] == 4
+            assert analytics_json["workers_observed"] == 1
+            assert analytics_json["violation_categories"]["no_helmet"] == 1
+            assert (
+                analytics_json["alerts_over_time"][0]["event_status"]
+                == "verified_potential_event"
+            )
 
             # Invalid image still returns 400.
             bad = client.post(

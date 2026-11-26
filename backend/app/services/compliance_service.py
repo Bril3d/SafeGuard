@@ -7,17 +7,22 @@ import threading
 import time
 
 from backend.app.schemas import (
+    AlertStatusUpdateResponse,
+    AlertTimelinePointSchema,
+    ComplianceAlertsResponse,
     ComplianceEventSchema,
     ComplianceMonitorResponse,
     ComplianceResetResponse,
     ComplianceSummarySchema,
     DetectionSchema,
     PersonAssociationSchema,
+    StreamAnalyticsResponse,
     TrackSchema,
 )
 from backend.app.services.inference_service import InferenceService
+from src.compliance.alerts import ComplianceEvent
 from src.compliance.rules import ComplianceConfig, ComplianceEngine, DetectionInput
-from src.tracking.tracker import ByteTrackTracker, TrackerConfig
+from src.tracking.tracker import ByteTrackTracker, Track, TrackerConfig
 
 
 def _to_detection_schema(det: DetectionInput) -> DetectionSchema:
@@ -26,6 +31,38 @@ def _to_detection_schema(det: DetectionInput) -> DetectionSchema:
         class_name=det.class_name,
         confidence=det.confidence,
         bbox_xyxy=det.bbox_xyxy,
+    )
+
+
+def _to_track_schema(trk: Track) -> TrackSchema:
+    return TrackSchema(
+        track_id=trk.track_id,
+        bbox_xyxy=trk.bbox_xyxy,
+        confidence=trk.confidence,
+        age=trk.age,
+        hits=trk.hits,
+        time_since_update=trk.time_since_update,
+        state=trk.state,
+    )
+
+
+def _to_event_schema(evt: ComplianceEvent) -> ComplianceEventSchema:
+    return ComplianceEventSchema(
+        event_id=evt.event_id,
+        event_type=evt.event_type,
+        severity=evt.severity,
+        track_id=evt.track_id,
+        timestamp=evt.timestamp,
+        frame_index=evt.frame_index,
+        confirmed_frames=evt.confirmed_frames,
+        confidence=evt.confidence,
+        bbox_xyxy=evt.bbox_xyxy,
+        requires_human_review=evt.requires_human_review,
+        message=evt.message,
+        violation_category=evt.violation_category,
+        event_status=evt.event_status,
+        evidence_bbox_xyxy=evt.evidence_bbox_xyxy,
+        evidence_frame_b64=evt.evidence_frame_b64,
     )
 
 
@@ -64,7 +101,7 @@ class CompliancePipelineService:
             return engine, stream_lock
 
     def reset_stream(self, stream_id: str) -> ComplianceResetResponse:
-        """Reset tracking and temporal compliance history for a stream."""
+        """Reset tracking, temporal compliance history, and analytics for a stream."""
         with self._lock:
             entry = self._streams.get(stream_id)
         if entry is not None:
@@ -75,6 +112,71 @@ class CompliancePipelineService:
             stream_id=stream_id,
             reset=True,
             message=f"Compliance state reset for stream '{stream_id}'.",
+        )
+
+    def get_alerts(
+        self,
+        stream_id: str = "default",
+        status: str | None = None,
+        limit: int = 100,
+    ) -> ComplianceAlertsResponse:
+        """Return retained potential compliance events for a logical stream."""
+        engine, stream_lock = self._get_engine(stream_id)
+        with stream_lock:
+            events = engine.get_alerts(status=status, limit=limit)
+            total_retained = len(engine.event_history)
+        return ComplianceAlertsResponse(
+            stream_id=stream_id,
+            total_retained=total_retained,
+            events=[_to_event_schema(evt) for evt in events],
+        )
+
+    def update_alert_status(
+        self,
+        stream_id: str,
+        event_id: str,
+        new_status: str,
+    ) -> AlertStatusUpdateResponse | None:
+        """Update human review status on a retained stream alert."""
+        engine, stream_lock = self._get_engine(stream_id)
+        with stream_lock:
+            updated = engine.update_alert_status(event_id, new_status)
+        if updated is None:
+            return None
+        return AlertStatusUpdateResponse(
+            stream_id=stream_id,
+            event=_to_event_schema(updated),
+        )
+
+    def get_analytics(self, stream_id: str = "default") -> StreamAnalyticsResponse:
+        """Return cumulative tracking, PPE, and alert trend analytics."""
+        engine, stream_lock = self._get_engine(stream_id)
+        with stream_lock:
+            snap = engine.get_analytics()
+        return StreamAnalyticsResponse(
+            stream_id=stream_id,
+            frames_processed=snap.frames_processed,
+            workers_observed=snap.workers_observed,
+            active_workers=snap.active_workers,
+            lost_workers=snap.lost_workers,
+            ppe_detections=snap.ppe_detections,
+            compliance_states=snap.compliance_states,
+            potential_violations=snap.potential_violations,
+            alerts_emitted=snap.alerts_emitted,
+            suppressed_duplicates=snap.suppressed_duplicates,
+            violation_categories=snap.violation_categories,
+            alerts_over_time=[
+                AlertTimelinePointSchema(
+                    timestamp=pt.timestamp,
+                    frame_index=pt.frame_index,
+                    event_id=pt.event_id,
+                    track_id=pt.track_id,
+                    violation_category=pt.violation_category,
+                    confidence=pt.confidence,
+                    event_status=pt.event_status,
+                )
+                for pt in snap.alerts_over_time
+            ],
         )
 
     def process_frame(
@@ -88,8 +190,8 @@ class CompliancePipelineService:
         iou_threshold: float | None = None,
         timestamp: float | None = None,
     ) -> ComplianceMonitorResponse:
-        """Execute Detection -> Tracking -> Association -> Compliance Rules."""
-        pred = self._inference_service.predict(
+        """Execute Raw -> Tracking -> Compliance -> Alerts + Analytics."""
+        pred, frame_bgr = self._inference_service.predict_with_frame(
             payload=payload,
             content_type=content_type,
             request_id=request_id,
@@ -110,7 +212,12 @@ class CompliancePipelineService:
 
         engine, stream_lock = self._get_engine(stream_id)
         with stream_lock:
-            comp_res = engine.process_frame(det_inputs, timestamp=timestamp)
+            comp_res = engine.process_frame(
+                det_inputs,
+                timestamp=timestamp,
+                frame_bgr=frame_bgr,
+                frame_size=(pred.image_width, pred.image_height),
+            )
         comp_ms = round((time.perf_counter() - t_comp0) * 1000.0, 3)
 
         compliant_cnt = sum(
@@ -129,6 +236,14 @@ class CompliancePipelineService:
         unknown_cnt = sum(
             1 for a in comp_res.associations if a.overall_status == "unknown"
         )
+        uncertain_cnt = sum(
+            1 for a in comp_res.associations if a.overall_status == "uncertain"
+        )
+        insuff_cnt = sum(
+            1
+            for a in comp_res.associations
+            if a.overall_status == "insufficient_visibility"
+        )
 
         return ComplianceMonitorResponse(
             request_id=request_id,
@@ -140,18 +255,8 @@ class CompliancePipelineService:
             frame_index=comp_res.frame_index,
             timestamp=comp_res.timestamp,
             detections=pred.detections,
-            tracks=[
-                TrackSchema(
-                    track_id=t.track_id,
-                    bbox_xyxy=t.bbox_xyxy,
-                    confidence=t.confidence,
-                    age=t.age,
-                    hits=t.hits,
-                    time_since_update=t.time_since_update,
-                    state=t.state,
-                )
-                for t in comp_res.tracks
-            ],
+            tracks=[_to_track_schema(t) for t in comp_res.tracks],
+            lost_tracks=[_to_track_schema(t) for t in comp_res.lost_tracks],
             associations=[
                 PersonAssociationSchema(
                     track_id=a.track_id,
@@ -168,26 +273,12 @@ class CompliancePipelineService:
                     overall_status=a.overall_status,
                     uncertainty_reasons=a.uncertainty_reasons,
                     violation_streak=a.violation_streak,
+                    visibility_status=a.visibility_status,
                 )
                 for a in comp_res.associations
             ],
             unmatched_ppe=[_to_detection_schema(b) for b in comp_res.unmatched_ppe],
-            events=[
-                ComplianceEventSchema(
-                    event_id=e.event_id,
-                    event_type=e.event_type,
-                    severity=e.severity,
-                    track_id=e.track_id,
-                    timestamp=e.timestamp,
-                    frame_index=e.frame_index,
-                    confirmed_frames=e.confirmed_frames,
-                    confidence=e.confidence,
-                    bbox_xyxy=e.bbox_xyxy,
-                    requires_human_review=e.requires_human_review,
-                    message=e.message,
-                )
-                for e in comp_res.events
-            ],
+            events=[_to_event_schema(e) for e in comp_res.events],
             summary=ComplianceSummarySchema(
                 tracked_persons=len(comp_res.associations),
                 compliant_count=compliant_cnt,
@@ -196,6 +287,9 @@ class CompliancePipelineService:
                 unknown_count=unknown_cnt,
                 emitted_event_count=len(comp_res.events),
                 suppressed_duplicates=comp_res.suppressed_duplicates,
+                uncertain_count=uncertain_cnt,
+                insufficient_visibility_count=insuff_cnt,
+                lost_tracks_count=len(comp_res.lost_tracks),
             ),
             timings_ms=pred.timings_ms,
             compliance_ms=comp_ms,
