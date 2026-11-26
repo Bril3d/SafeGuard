@@ -76,6 +76,8 @@ services:
     command: ["prefect", "server", "start", "--host", "0.0.0.0", "--port", "4200"]
     environment:
       PREFECT_SERVER_API_HOST: "0.0.0.0"
+      PREFECT_SERVER_UI_API_URL: "http://localhost:${PREFECT_PORT:-4200}/api"
+      PREFECT_UI_API_URL: "http://localhost:${PREFECT_PORT:-4200}/api"
       PREFECT_API_DATABASE_CONNECTION_URL: "sqlite+aiosqlite:////root/.prefect/prefect.db"
     ports:
       - "${PREFECT_PORT:-4200}:4200"
