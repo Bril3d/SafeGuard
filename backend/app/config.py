@@ -29,11 +29,25 @@ class Settings(BaseSettings):
     )
     conf_threshold: float = Field(
         default=0.25,
+        ge=0.01,
+        le=1.0,
         description="Default confidence threshold for ONNX predictions.",
     )
     iou_threshold: float = Field(
         default=0.50,
+        ge=0.05,
+        le=0.95,
         description="Default NMS IoU threshold for ONNX predictions.",
+    )
+    max_upload_bytes: int = Field(
+        default=10 * 1024 * 1024,
+        gt=0,
+        description="Maximum accepted image upload payload in bytes (default 10 MB).",
+    )
+    max_image_dimension: int = Field(
+        default=4096,
+        gt=0,
+        description="Maximum accepted image width or height in pixels.",
     )
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://localhost:3000"],
