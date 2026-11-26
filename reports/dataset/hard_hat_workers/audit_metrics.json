@@ -1,0 +1,543 @@
+{
+  "metadata": {
+    "url": "https://universe.roboflow.com/joseph-nelson/hard-hat-workers/dataset/10",
+    "workspace": "joseph-nelson",
+    "project": "hard-hat-workers",
+    "version": 10,
+    "license": "Public Domain",
+    "nc": 3,
+    "names": {
+      "0": "head",
+      "1": "helmet",
+      "2": "person"
+    }
+  },
+  "counts": {
+    "total_images": 7035,
+    "split_images": {
+      "train": 4916,
+      "valid": 1413,
+      "test": 706
+    },
+    "total_label_files": 7035,
+    "missing_labels": 0,
+    "orphan_labels": 0,
+    "empty_label_files": 0,
+    "corrupted_images": 0,
+    "valid_box_count": 27039,
+    "invalid_box_count": 0,
+    "invalid_boxes_sample": []
+  },
+  "image_properties": {
+    "formats": {
+      "JPEG": 7035
+    },
+    "modes": {
+      "RGB": 7035
+    },
+    "width": {
+      "min": 167,
+      "p10": 400,
+      "median": 500,
+      "p90": 500,
+      "max": 1100
+    },
+    "height": {
+      "min": 126,
+      "p10": 282,
+      "median": 333,
+      "p90": 436,
+      "max": 965
+    },
+    "top5_dimensions": {
+      "500x333": 1365,
+      "500x375": 635,
+      "500x334": 320,
+      "500x332": 303,
+      "450x300": 200
+    }
+  },
+  "class_distribution": {
+    "total_instances": {
+      "helmet": 19747,
+      "head": 6677,
+      "person": 615
+    },
+    "total_images_with_class": {
+      "helmet": 6436,
+      "head": 1307,
+      "person": 209
+    },
+    "by_split_instances": {
+      "train": {
+        "helmet": 13919,
+        "head": 4612,
+        "person": 450
+      },
+      "valid": {
+        "helmet": 3913,
+        "head": 1339,
+        "person": 101
+      },
+      "test": {
+        "helmet": 1915,
+        "head": 726,
+        "person": 64
+      }
+    },
+    "by_split_images": {
+      "train": {
+        "helmet": 4503,
+        "head": 911,
+        "person": 154
+      },
+      "valid": {
+        "helmet": 1297,
+        "head": 256,
+        "person": 32
+      },
+      "test": {
+        "helmet": 636,
+        "head": 140,
+        "person": 23
+      }
+    },
+    "class_combinations": {
+      "helmet": 5543,
+      "head": 599,
+      "head+helmet": 684,
+      "helmet+person": 185,
+      "head+helmet+person": 24
+    }
+  },
+  "bbox_summary": {
+    "head": {
+      "count": 6677,
+      "median_w": 0.058,
+      "median_h": 0.1042,
+      "median_area": 0.00603,
+      "p10_area": 0.00218,
+      "p90_area": 0.01961,
+      "median_ar": 0.56,
+      "small_lt_0_01_pct": 71.62,
+      "tiny_lt_0_005_pct": 40.89
+    },
+    "helmet": {
+      "count": 19747,
+      "median_w": 0.071,
+      "median_h": 0.1182,
+      "median_area": 0.00829,
+      "p10_area": 0.00222,
+      "p90_area": 0.04855,
+      "median_ar": 0.584,
+      "small_lt_0_01_pct": 55.6,
+      "tiny_lt_0_005_pct": 32.28
+    },
+    "person": {
+      "count": 615,
+      "median_w": 0.156,
+      "median_h": 0.4926,
+      "median_area": 0.07826,
+      "p10_area": 0.0154,
+      "p90_area": 0.33346,
+      "median_ar": 0.358,
+      "small_lt_0_01_pct": 6.02,
+      "tiny_lt_0_005_pct": 2.28
+    }
+  },
+  "semantic_checks": {
+    "head_helmet_pairs_checked": 7332,
+    "head_helmet_overlap_iou_ge_0_3_images": 4,
+    "head_helmet_overlap_examples": [
+      {
+        "iou": 0.874,
+        "image": "003385_jpg.rf.854dba11d3cd214366e91e04756e4c99.jpg",
+        "split": "train"
+      },
+      {
+        "iou": 0.867,
+        "image": "002686_jpg.rf.0073332be9723e276e147b7dacecb6ea.jpg",
+        "split": "train"
+      },
+      {
+        "iou": 0.748,
+        "image": "002109_jpg.rf.7281fd4774d7f0ee2c992328b85e5c77.jpg",
+        "split": "train"
+      },
+      {
+        "iou": 0.303,
+        "image": "005098_jpg.rf.55a6227e00fdefba90661baf0e078126.jpg",
+        "split": "valid"
+      }
+    ],
+    "images_with_person": 209,
+    "images_with_head_or_helmet_but_no_person": 6826,
+    "images_with_person_where_head_plus_helmet_gt_person": 21,
+    "head_inside_person_rate": 0.9211,
+    "helmet_inside_person_rate": 0.9602
+  },
+  "duplicates_and_leakage": {
+    "within_hhw_exact_sha_groups": 0,
+    "within_hhw_exact_extra_copies": 0,
+    "within_hhw_exact_cross_split_groups": 0,
+    "within_hhw_near_phash_clusters_le6": 168,
+    "within_hhw_near_phash_cross_split_clusters": 79,
+    "within_hhw_near_pairs_distinct_sha": 192,
+    "cross_exact_sha_vs_roboflow_v30": 1,
+    "cross_exact_sha_vs_ultralytics_ppe": 0,
+    "cross_exact_sha_vs_processed_splits": {
+      "hhw:train <-> train_roboflow": 1
+    },
+    "cross_exact_sha_samples": [
+      {
+        "hhw_split": "train",
+        "hhw": "000415_jpg.rf.8fe7901d69538bd918490629e5558451.jpg",
+        "existing_split": "train",
+        "existing": "000415_jpg.rf.b5634019ce7c1f60117cff1f9daa20c5.jpg"
+      }
+    ],
+    "cross_near_phash_le6_vs_roboflow_v30": 31,
+    "cross_near_phash_le6_vs_ultralytics_ppe": 0,
+    "cross_near_phash_vs_processed_splits": {
+      "hhw:train <-> test_roboflow": 5,
+      "hhw:train <-> val_roboflow": 3,
+      "hhw:train <-> train_roboflow": 9,
+      "hhw:valid <-> train_roboflow": 7,
+      "hhw:valid <-> test_roboflow": 2,
+      "hhw:test <-> train_roboflow": 4,
+      "hhw:test <-> val_roboflow": 1
+    },
+    "cross_near_phash_samples": [
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "000005_jpg.rf.2d0b21a2407b79d7038d083eef4124e2.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "000005_jpg.rf.c613c066b79795d219855aca269760e6.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 4,
+        "hhw_split": "train",
+        "hhw_image": "000133_jpg.rf.ade77d14b111cc585173a56e43956035.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "valid",
+        "existing_image": "-1429-_png_jpg.rf.d88afaebfda9ebdd21b532caeceb70fd.jpg",
+        "processed_splits": [
+          "val_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "000496_jpg.rf.844c8d31c6dd72d46bd2e043282f8322.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005239_jpg.rf.00dddb5a9aaecbeebe07e0499c4e59eb.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 2,
+        "hhw_split": "train",
+        "hhw_image": "000960_jpg.rf.dc9bd09f4f65c99537566f064aa5f0cf.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005139_jpg.rf.ff62a48c0bd4e5b5dff61809c162d3b2.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "001425_jpg.rf.d9f83327d4c750a0d69024b235e4db22.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "001425_jpg.rf.ccdefc0e04ac537ea9695148b9cc40b3.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "002458_jpg.rf.0cabb7883fd20579967e359d9b708a20.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "002458_jpg.rf.fabab4c3e50cf0357885300322295cf3.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "002551_jpg.rf.8fe3006e5846ae1f30b885e9b90982b9.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "002551_jpg.rf.b09484b130c1587abfa8365c3d774bf1.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "002654_jpg.rf.feb0b5e7b0d0038210f4d8909b286010.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "002654_jpg.rf.a9f5806548b78d8f3db1b8423437008f.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "002682_jpg.rf.edc9fce1c950561e753d46c24d6c8ef9.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "002682_jpg.rf.76dcb2ca0de79b894d8a4f12aed4e45f.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "003184_jpg.rf.844ab8ed5ffe4e4f2bfeb68d7a2df8e8.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "003184_jpg.rf.350907e4e78ed835b42f0aca59001d5a.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "003357_jpg.rf.9c7c8a9c2b44350c97ce42a15d5218e1.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "003357_jpg.rf.9fb1f2cebc239b4276a81ce2cbf9e911.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "004063_jpg.rf.2ca8b2a0fdac208f22794d7cfb68f36e.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "004063_jpg.rf.6ecc587c20a87ec176841aea39b8f5db.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 2,
+        "hhw_split": "train",
+        "hhw_image": "004113_jpg.rf.d11c1749e9782faaee4109991df1c73f.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "02629_jpg.rf.664b948ee635abc91ffdbf1fe3b2cd92.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "004424_jpg.rf.81197df4612531d7c7e5d6f7b0551f89.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "valid",
+        "existing_image": "004424_jpg.rf.b59bf6cd1c70cd5d10e054a76a4453ef.jpg",
+        "processed_splits": [
+          "val_roboflow"
+        ]
+      },
+      {
+        "hamming": 4,
+        "hhw_split": "train",
+        "hhw_image": "004631_jpg.rf.9b1f54be7c23739dea153278a3bad08e.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "valid",
+        "existing_image": "-1969-_png_jpg.rf.c383b0a9a12f96b66d8089f4b4cb8b5c.jpg",
+        "processed_splits": [
+          "val_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "004720_jpg.rf.488701b43212de103a6f65c414f6d6dc.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "004720_jpg.rf.1fdc84fb0ba279430c7e5ec4d20614f0.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "train",
+        "hhw_image": "004763_jpg.rf.9a3c7f91fa5d6456964b9698e23cb655.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "004763_jpg.rf.c8f1bd1cb7cf6037f7c90a6c213d6364.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "005100_jpg.rf.435e8506cf00cb293381a8edf073f4a3.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005100_jpg.rf.b806858860e4fe97b915e4585d656613.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "005139_jpg.rf.bd627f86840aedab956f4b9677d2ffc1.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005139_jpg.rf.ff62a48c0bd4e5b5dff61809c162d3b2.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "005180_jpg.rf.1b69be4d2b408262d80e808fa69af7db.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005180_jpg.rf.1527ba2b6c2b201c89ce18a0c465308e.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "005239_jpg.rf.5f1ecfd1a2f522498672fba5e0e0523f.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005239_jpg.rf.00dddb5a9aaecbeebe07e0499c4e59eb.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "006012_jpg.rf.8abb3abfe1be42ab20c5c74b697066c2.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "006012_jpg.rf.f7c1f96f913ba35d2e14ec576e5f7ca6.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "006118_jpg.rf.c971044d903cd674f22bb850b16600d4.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "006118_jpg.rf.07a45c83f80fef659eb79d408e6fb3ec.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "006463_jpg.rf.7eefd1cdda22e65cd2ae7939a6d03614.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "006463_jpg.rf.f134bfc3f96f0e501a027414ffffcc82.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "006672_jpg.rf.1b3617abddde050c828eff3bc893c8b8.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "test",
+        "existing_image": "006672_jpg.rf.657b0a9ecd720d07ca5dd75338a058d5.jpg",
+        "processed_splits": [
+          "test_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "valid",
+        "hhw_image": "006858_jpg.rf.d99281af9215e2ff9d3d3992e1cd944b.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "006858_jpg.rf.14c55e59e342e104bffda6a89782b313.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "test",
+        "hhw_image": "005310_jpg.rf.a18992617abba976419438859295836a.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005310_jpg.rf.779dd1802a50a32495b716c32a9a67d4.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "test",
+        "hhw_image": "005376_jpg.rf.a40700549c50160284002961e82432e0.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005376_jpg.rf.f9ddfb0104a7fc8b3473d7daa8cd919f.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "test",
+        "hhw_image": "005559_jpg.rf.8cef74dfb2d33ba399d1c039f39e0974.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "valid",
+        "existing_image": "005559_jpg.rf.fd9b766cdd074f1fb836192b20a7caca.jpg",
+        "processed_splits": [
+          "val_roboflow"
+        ]
+      },
+      {
+        "hamming": 0,
+        "hhw_split": "test",
+        "hhw_image": "005577_jpg.rf.d5c02d99a4be189ad47db6f1a36c3464.jpg",
+        "existing_source": "roboflow_v30",
+        "existing_split": "train",
+        "existing_image": "005577_jpg.rf.8aa66d44cf6021df4a28d10cb1a78f68.jpg",
+        "processed_splits": [
+          "train_roboflow"
+        ]
+      }
+    ]
+  }
+}
