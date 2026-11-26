@@ -149,3 +149,89 @@ class FramePredictResponse(PredictResponse):
     frame_id: str | None = Field(
         default=None, description="Optional client-supplied frame identifier."
     )
+
+
+class TrackSchema(StrictSchema):
+    """Anonymous tracked person bounding box and lifecycle counters."""
+
+    track_id: int = Field(ge=1, description="Temporary anonymous frame-to-frame ID.")
+    bbox_xyxy: list[float] = Field(min_length=4, max_length=4)
+    confidence: float = Field(ge=0.0, le=1.0)
+    age: int = Field(ge=1)
+    hits: int = Field(ge=1)
+    time_since_update: int = Field(ge=0)
+    state: str = Field(description="Track status ('active' or 'lost').")
+
+
+class PersonAssociationSchema(StrictSchema):
+    """Person-to-PPE spatial association and safety status."""
+
+    track_id: int = Field(ge=1)
+    person_confidence: float = Field(ge=0.0, le=1.0)
+    bbox_xyxy: list[float] = Field(min_length=4, max_length=4)
+    helmet_boxes: list[DetectionSchema]
+    no_helmet_boxes: list[DetectionSchema]
+    vest_boxes: list[DetectionSchema]
+    gloves_boxes: list[DetectionSchema]
+    helmet_status: str
+    vest_status: str
+    overall_status: str
+    uncertainty_reasons: list[str]
+    violation_streak: int = Field(ge=0)
+
+
+class ComplianceEventSchema(StrictSchema):
+    """Potential compliance event requiring human verification."""
+
+    event_id: str
+    event_type: str
+    severity: str
+    track_id: int = Field(ge=1)
+    timestamp: float
+    frame_index: int = Field(ge=1)
+    confirmed_frames: int = Field(ge=1)
+    confidence: float = Field(ge=0.0, le=1.0)
+    bbox_xyxy: list[float] = Field(min_length=4, max_length=4)
+    requires_human_review: bool
+    message: str
+
+
+class ComplianceSummarySchema(StrictSchema):
+    """Aggregate compliance counts for the processed frame."""
+
+    tracked_persons: int = Field(ge=0)
+    compliant_count: int = Field(ge=0)
+    potential_violation_count: int = Field(ge=0)
+    pending_confirmation_count: int = Field(ge=0)
+    unknown_count: int = Field(ge=0)
+    emitted_event_count: int = Field(ge=0)
+    suppressed_duplicates: int = Field(ge=0)
+
+
+class ComplianceMonitorResponse(StrictSchema):
+    """Full pipeline response for POST /predict/compliance."""
+
+    request_id: str
+    stream_id: str
+    frame_id: str | None = None
+    model_version: str
+    image_width: int = Field(gt=0)
+    image_height: int = Field(gt=0)
+    frame_index: int = Field(ge=1)
+    timestamp: float
+    detections: list[DetectionSchema]
+    tracks: list[TrackSchema]
+    associations: list[PersonAssociationSchema]
+    unmatched_ppe: list[DetectionSchema]
+    events: list[ComplianceEventSchema]
+    summary: ComplianceSummarySchema
+    timings_ms: TimingBreakdownSchema
+    compliance_ms: float = Field(ge=0.0)
+
+
+class ComplianceResetResponse(StrictSchema):
+    """Response payload for POST /compliance/reset."""
+
+    stream_id: str
+    reset: bool
+    message: str

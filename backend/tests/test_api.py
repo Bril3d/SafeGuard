@@ -314,8 +314,99 @@ def test_openapi_docs_and_paths_accessible(monkeypatch) -> None:
             "/predict",
             "/predict/visualize",
             "/predict/frame",
+            "/predict/compliance",
+            "/compliance/reset",
         ):
             assert expected in paths
+    finally:
+        get_settings.cache_clear()
+
+
+def test_predict_compliance_pipeline_temporal_confirmation_and_cooldown(
+    monkeypatch, tmp_path: Path
+) -> None:
+    """End-to-end compliance endpoint tracks IDs, confirms over N frames, and resets."""
+    fake_onnx = tmp_path / "detector.onnx"
+    fake_onnx.write_bytes(b"onnx-placeholder")
+
+    # 640x480 letterboxed inside 640x640 has pad_top=80 -> y=130..430 maps to y=50..350.
+    raw_out = np.zeros((1, 9, 8400), dtype=np.float32)
+    raw_out[0, :4, 0] = [320.0, 280.0, 120.0, 300.0]  # person: x=260..380, y=50..350
+    raw_out[0, 4 + 0, 0] = 0.92
+    raw_out[0, :4, 1] = [320.0, 160.0, 50.0, 50.0]  # no_helmet in head zone
+    raw_out[0, 4 + 4, 1] = 0.86
+
+    init_calls = 0
+    orig_init = ONNXDetector.__init__
+
+    def _counting_init(self, *args, **kwargs):
+        nonlocal init_calls
+        init_calls += 1
+        return orig_init(self, *args, **kwargs)
+
+    monkeypatch.setattr(
+        "backend.app.inference.ort.InferenceSession",
+        _make_fake_session_class(raw_out),
+    )
+    monkeypatch.setattr(ONNXDetector, "__init__", _counting_init)
+    monkeypatch.setenv("SAFEGUARD_MODEL_PATH", str(fake_onnx))
+    monkeypatch.setenv("SAFEGUARD_COMPLIANCE_CONFIRM_FRAMES", "3")
+    monkeypatch.setenv("SAFEGUARD_COMPLIANCE_COOLDOWN_SECONDS", "10.0")
+    get_settings.cache_clear()
+
+    try:
+        with TestClient(app) as client:
+            jpg = _make_image_bytes("JPEG", 640, 480)
+            r1 = client.post(
+                "/predict/compliance?stream_id=gate-1&timestamp=1.0",
+                files={"file": ("f1.jpg", jpg, "image/jpeg")},
+            )
+            assert r1.status_code == 200
+            d1 = r1.json()
+            assert d1["summary"]["tracked_persons"] == 1
+            assert d1["summary"]["pending_confirmation_count"] == 1
+            assert d1["summary"]["emitted_event_count"] == 0
+            tid = d1["tracks"][0]["track_id"]
+
+            r2 = client.post(
+                "/predict/compliance?stream_id=gate-1&timestamp=2.0",
+                files={"file": ("f2.jpg", jpg, "image/jpeg")},
+            )
+            assert r2.status_code == 200
+            assert r2.json()["tracks"][0]["track_id"] == tid
+            assert r2.json()["summary"]["emitted_event_count"] == 0
+
+            r3 = client.post(
+                "/predict/compliance?stream_id=gate-1&timestamp=3.0",
+                files={"file": ("f3.jpg", jpg, "image/jpeg")},
+            )
+            assert r3.status_code == 200
+            d3 = r3.json()
+            assert d3["summary"]["potential_violation_count"] == 1
+            assert d3["summary"]["emitted_event_count"] == 1
+            assert d3["events"][0]["event_type"] == "potential_no_helmet"
+            assert d3["events"][0]["requires_human_review"] is True
+
+            # Frame 4 inside 10s cooldown -> suppressed duplicate.
+            r4 = client.post(
+                "/predict/compliance?stream_id=gate-1&timestamp=5.0",
+                files={"file": ("f4.jpg", jpg, "image/jpeg")},
+            )
+            assert r4.status_code == 200
+            assert r4.json()["summary"]["emitted_event_count"] == 0
+            assert r4.json()["summary"]["suppressed_duplicates"] == 1
+
+            # Invalid image still returns 400.
+            bad = client.post(
+                "/predict/compliance?stream_id=gate-1",
+                files={"file": ("bad.jpg", b"not-img", "image/jpeg")},
+            )
+            assert bad.status_code == 400
+
+            reset_res = client.post("/compliance/reset?stream_id=gate-1")
+            assert reset_res.status_code == 200
+            assert reset_res.json()["reset"] is True
+        assert init_calls == 1
     finally:
         get_settings.cache_clear()
 

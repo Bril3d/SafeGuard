@@ -49,6 +49,49 @@ class Settings(BaseSettings):
         gt=0,
         description="Maximum accepted image width or height in pixels.",
     )
+    compliance_confirm_frames: int = Field(
+        default=3,
+        ge=1,
+        description="Consecutive frames required before emitting a potential alert.",
+    )
+    compliance_cooldown_seconds: float = Field(
+        default=10.0,
+        ge=0.0,
+        description="Minimum seconds between repeated alerts for the same track.",
+    )
+    compliance_ambiguous_margin: float = Field(
+        default=0.15,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "Confidence margin within which conflicting helmet/no_helmet is ambiguous."
+        ),
+    )
+    tracker_max_age: int = Field(
+        default=15,
+        ge=1,
+        description="Max missed frames to retain an occluded anonymous track ID.",
+    )
+    tracker_high_conf: float = Field(
+        default=0.45,
+        ge=0.05,
+        le=1.0,
+        description="ByteTrack first-stage high-confidence person threshold.",
+    )
+    tracker_low_conf: float = Field(
+        default=0.15,
+        ge=0.01,
+        le=1.0,
+        description=(
+            "ByteTrack second-stage low-confidence occlusion recovery threshold."
+        ),
+    )
+    tracker_iou_threshold: float = Field(
+        default=0.25,
+        ge=0.05,
+        le=0.95,
+        description="Minimum IoU for primary track-to-detection matching.",
+    )
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://localhost:3000"],
         description="Allowed CORS origins for browser clients.",

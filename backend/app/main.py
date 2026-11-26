@@ -15,14 +15,18 @@ from fastapi.responses import JSONResponse
 
 from backend.app.config import get_settings
 from backend.app.inference import ONNXDetector
+from backend.app.routes.compliance import router as compliance_router
 from backend.app.routes.health import router as health_router
 from backend.app.routes.inference import router as inference_router
 from backend.app.schemas import ErrorDetail, ErrorResponse
+from backend.app.services.compliance_service import CompliancePipelineService
 from backend.app.services.inference_service import (
     ImageValidationError,
     InferenceService,
     ModelUnavailableError,
 )
+from src.compliance.rules import ComplianceConfig
+from src.tracking.tracker import TrackerConfig
 
 logger = logging.getLogger(__name__)
 
@@ -98,16 +102,32 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
                 model_file,
             )
 
-    application.state.inference_service = InferenceService(
+    inf_service = InferenceService(
         detector=detector,
         model_version=str(application.state.loaded_model_version),
         max_upload_bytes=settings.max_upload_bytes,
         max_image_dimension=settings.max_image_dimension,
     )
+    application.state.inference_service = inf_service
+    application.state.compliance_service = CompliancePipelineService(
+        inference_service=inf_service,
+        compliance_config=ComplianceConfig(
+            confirm_frames=settings.compliance_confirm_frames,
+            cooldown_seconds=settings.compliance_cooldown_seconds,
+            ambiguous_margin=settings.compliance_ambiguous_margin,
+        ),
+        tracker_config=TrackerConfig(
+            high_conf_threshold=settings.tracker_high_conf,
+            low_conf_threshold=settings.tracker_low_conf,
+            match_iou_threshold=settings.tracker_iou_threshold,
+            max_age=settings.tracker_max_age,
+        ),
+    )
 
     yield
     application.state.detector = None
     application.state.inference_service = None
+    application.state.compliance_service = None
     application.state.model_loaded = False
 
 
@@ -201,6 +221,7 @@ def create_app() -> FastAPI:
 
     application.include_router(health_router)
     application.include_router(inference_router)
+    application.include_router(compliance_router)
     return application
 
 
