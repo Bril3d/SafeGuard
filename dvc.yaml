@@ -120,3 +120,35 @@ stages:
     outs:
       - reports/experiments/active_eval_summary.json:
           cache: false
+
+  export:
+    cmd: python -m src.models.export_onnx --output models/production/safeguard_yolo11s.onnx --verification-output reports/benchmark/verification_report.json
+    deps:
+      - src/models/export_onnx.py
+      - backend/app/inference.py
+      - configs/class_mapping.yaml
+      - reports/experiments/active_eval_summary.json
+    params:
+      - training.conf_threshold
+      - training.iou_threshold
+    outs:
+      - models/production/safeguard_yolo11s.onnx:
+          cache: false
+      - models/production/safeguard_yolo11s.metadata.json:
+          cache: false
+      - reports/benchmark/verification_report.json:
+          cache: false
+
+  benchmark:
+    cmd: python -m src.models.benchmark --onnx models/production/safeguard_yolo11s.onnx --output reports/benchmark/benchmark_report.json
+    deps:
+      - src/models/benchmark.py
+      - backend/app/inference.py
+      - reports/benchmark/verification_report.json
+    outs:
+      - reports/benchmark/benchmark_report.json:
+          cache: false
+      - reports/benchmark/benchmark_comparison.md:
+          cache: false
+      - reports/benchmark/latency_comparison.png:
+          cache: false

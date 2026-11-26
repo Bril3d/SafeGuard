@@ -19,6 +19,22 @@ class Settings(BaseSettings):
         default="unloaded",
         description="Version identifier of the loaded ONNX model.",
     )
+    model_path: str | None = Field(
+        default="models/production/safeguard_yolo11s.onnx",
+        description="Filesystem path to the exported ONNX inference model.",
+    )
+    model_metadata_path: str | None = Field(
+        default=None,
+        description="Optional override path to model metadata JSON.",
+    )
+    conf_threshold: float = Field(
+        default=0.25,
+        description="Default confidence threshold for ONNX predictions.",
+    )
+    iou_threshold: float = Field(
+        default=0.50,
+        description="Default NMS IoU threshold for ONNX predictions.",
+    )
     cors_origins: list[str] = Field(
         default=["http://localhost:5173", "http://localhost:3000"],
         description="Allowed CORS origins for browser clients.",

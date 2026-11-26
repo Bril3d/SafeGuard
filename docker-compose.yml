@@ -9,7 +9,10 @@ services:
       SAFEGUARD_API_VERSION: ${SAFEGUARD_API_VERSION:-0.1.0}
       SAFEGUARD_LOG_LEVEL: ${SAFEGUARD_LOG_LEVEL:-INFO}
       SAFEGUARD_MODEL_VERSION: ${SAFEGUARD_MODEL_VERSION:-unloaded}
+      SAFEGUARD_MODEL_PATH: ${SAFEGUARD_MODEL_PATH:-/app/models/production/safeguard_yolo11s.onnx}
       SAFEGUARD_CORS_ORIGINS: ${SAFEGUARD_CORS_ORIGINS:-["http://localhost:3000","http://localhost:5173"]}
+    volumes:
+      - ./models/production:/app/models/production:ro
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     networks:

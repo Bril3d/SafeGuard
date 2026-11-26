@@ -1,0 +1,172 @@
+{
+  "hardware": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "cpu": "AMD64 Family 26 Model 36 Stepping 0, AuthenticAMD",
+    "gpu": "NVIDIA GeForce RTX 5070 Laptop GPU",
+    "available_ort_providers": [
+      "AzureExecutionProvider",
+      "CPUExecutionProvider"
+    ]
+  },
+  "images_benchmarked": 50,
+  "warmup_runs": 10,
+  "imgsz": 640,
+  "runtimes": [
+    {
+      "runtime": "pytorch (CPU)",
+      "device": "CPU",
+      "artifact_path": "models\\candidates\\EXP-E\\EXP-E_seed42_best.pt",
+      "artifact_size_mb": 18.271,
+      "load_time_ms": 39.576,
+      "imgsz": 640,
+      "warmup_runs": 10,
+      "rss_before_mb": 518.52,
+      "rss_after_load_mb": 570.68,
+      "rss_peak_mb": 1076.64,
+      "rss_delta_mb": 558.12,
+      "cuda_peak_allocated_mb": 0.0,
+      "cuda_peak_reserved_mb": 0.0,
+      "preprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 19.552,
+        "median_ms": 19.264,
+        "p95_ms": 35.361,
+        "min_ms": 6.788,
+        "max_ms": 46.112,
+        "fps": 51.15
+      },
+      "inference_latency": {
+        "count": 50.0,
+        "mean_ms": 100.013,
+        "median_ms": 100.518,
+        "p95_ms": 103.628,
+        "min_ms": 87.489,
+        "max_ms": 108.77,
+        "fps": 10.0
+      },
+      "postprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 1.549,
+        "median_ms": 1.532,
+        "p95_ms": 2.874,
+        "min_ms": 0.397,
+        "max_ms": 3.354,
+        "fps": 645.49
+      },
+      "end_to_end_latency": {
+        "count": 50.0,
+        "mean_ms": 121.115,
+        "median_ms": 121.876,
+        "p95_ms": 136.356,
+        "min_ms": 101.806,
+        "max_ms": 148.652,
+        "fps": 8.26
+      }
+    },
+    {
+      "runtime": "onnxruntime (CPUExecutionProvider)",
+      "device": "CPU",
+      "providers": [
+        "CPUExecutionProvider"
+      ],
+      "artifact_path": "models\\production\\safeguard_yolo11s.onnx",
+      "artifact_size_mb": 36.139,
+      "load_time_ms": 96.301,
+      "imgsz": 640,
+      "warmup_runs": 10,
+      "rss_before_mb": 57.13,
+      "rss_after_load_mb": 105.56,
+      "rss_peak_mb": 646.95,
+      "rss_delta_mb": 589.82,
+      "cuda_peak_allocated_mb": 0.0,
+      "cuda_peak_reserved_mb": 0.0,
+      "preprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 17.443,
+        "median_ms": 17.298,
+        "p95_ms": 32.824,
+        "min_ms": 5.435,
+        "max_ms": 39.569,
+        "fps": 57.33
+      },
+      "inference_latency": {
+        "count": 50.0,
+        "mean_ms": 49.698,
+        "median_ms": 48.462,
+        "p95_ms": 56.83,
+        "min_ms": 42.184,
+        "max_ms": 59.316,
+        "fps": 20.12
+      },
+      "postprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 0.783,
+        "median_ms": 0.764,
+        "p95_ms": 1.407,
+        "min_ms": 0.251,
+        "max_ms": 1.653,
+        "fps": 1276.65
+      },
+      "end_to_end_latency": {
+        "count": 50.0,
+        "mean_ms": 67.924,
+        "median_ms": 63.957,
+        "p95_ms": 85.858,
+        "min_ms": 48.928,
+        "max_ms": 94.073,
+        "fps": 14.72
+      }
+    },
+    {
+      "runtime": "pytorch (NVIDIA GeForce RTX 5070 Laptop GPU)",
+      "device": "GPU",
+      "artifact_path": "models\\candidates\\EXP-E\\EXP-E_seed42_best.pt",
+      "artifact_size_mb": 18.271,
+      "load_time_ms": 265.612,
+      "imgsz": 640,
+      "warmup_runs": 10,
+      "rss_before_mb": 536.81,
+      "rss_after_load_mb": 694.25,
+      "rss_peak_mb": 1739.14,
+      "rss_delta_mb": 1202.33,
+      "cuda_peak_allocated_mb": 122.94,
+      "cuda_peak_reserved_mb": 160.0,
+      "preprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 17.61,
+        "median_ms": 15.575,
+        "p95_ms": 35.112,
+        "min_ms": 4.844,
+        "max_ms": 48.353,
+        "fps": 56.79
+      },
+      "inference_latency": {
+        "count": 50.0,
+        "mean_ms": 13.753,
+        "median_ms": 14.04,
+        "p95_ms": 17.969,
+        "min_ms": 9.368,
+        "max_ms": 20.341,
+        "fps": 72.71
+      },
+      "postprocess_latency": {
+        "count": 50.0,
+        "mean_ms": 6.637,
+        "median_ms": 5.781,
+        "p95_ms": 15.523,
+        "min_ms": 0.422,
+        "max_ms": 18.529,
+        "fps": 150.66
+      },
+      "end_to_end_latency": {
+        "count": 50.0,
+        "mean_ms": 38.001,
+        "median_ms": 36.094,
+        "p95_ms": 58.548,
+        "min_ms": 17.685,
+        "max_ms": 66.086,
+        "fps": 26.32
+      }
+    }
+  ]
+}
