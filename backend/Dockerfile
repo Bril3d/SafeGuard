@@ -1,5 +1,5 @@
 # Multi-stage runtime Dockerfile for SafeGuard FastAPI service.
-# Strictly excludes training dependencies (PyTorch, Ultralytics, DVC, MLflow) and datasets.
+# Strictly excludes training dependencies (PyTorch, Ultralytics, DVC, MLflow), credentials, and datasets.
 
 FROM python:3.12-slim AS builder
 
@@ -26,9 +26,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 RUN addgroup --system appgroup && \
-    adduser --system --ingroup appgroup appuser
+    adduser --system --ingroup appgroup appuser && \
+    mkdir -p /app/models/production && \
+    chown -R appuser:appgroup /app
 
 COPY --from=builder /opt/venv /opt/venv
+COPY configs/class_mapping.yaml ./configs/class_mapping.yaml
 COPY backend/__init__.py ./backend/__init__.py
 COPY backend/app ./backend/app
 COPY src/__init__.py ./src/__init__.py
@@ -39,7 +42,7 @@ USER appuser
 
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
     CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
 
 CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

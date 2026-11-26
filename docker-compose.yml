@@ -10,6 +10,11 @@ services:
       SAFEGUARD_LOG_LEVEL: ${SAFEGUARD_LOG_LEVEL:-INFO}
       SAFEGUARD_MODEL_VERSION: ${SAFEGUARD_MODEL_VERSION:-unloaded}
       SAFEGUARD_MODEL_PATH: ${SAFEGUARD_MODEL_PATH:-/app/models/production/safeguard_yolo11s.onnx}
+      SAFEGUARD_CONF_THRESHOLD: ${SAFEGUARD_CONF_THRESHOLD:-0.25}
+      SAFEGUARD_IOU_THRESHOLD: ${SAFEGUARD_IOU_THRESHOLD:-0.50}
+      SAFEGUARD_COMPLIANCE_CONFIRM_FRAMES: ${SAFEGUARD_COMPLIANCE_CONFIRM_FRAMES:-3}
+      SAFEGUARD_COMPLIANCE_COOLDOWN_SECONDS: ${SAFEGUARD_COMPLIANCE_COOLDOWN_SECONDS:-10.0}
+      SAFEGUARD_COMPLIANCE_CAPTURE_EVIDENCE: ${SAFEGUARD_COMPLIANCE_CAPTURE_EVIDENCE:-true}
       SAFEGUARD_CORS_ORIGINS: ${SAFEGUARD_CORS_ORIGINS:-["http://localhost:3000","http://localhost:5173"]}
     volumes:
       - ./models/production:/app/models/production:ro
@@ -47,18 +52,9 @@ services:
     restart: unless-stopped
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.22.4
-    command:
-      - mlflow
-      - server
-      - --host
-      - 0.0.0.0
-      - --port
-      - "5000"
-      - --backend-store-uri
-      - sqlite:////mlflow/mlflow.db
-      - --default-artifact-root
-      - /mlflow/artifacts
+    build:
+      context: .
+      dockerfile: mlflow/Dockerfile
     ports:
       - "${MLFLOW_PORT:-5000}:5000"
     volumes:

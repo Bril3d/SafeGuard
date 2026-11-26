@@ -8,7 +8,7 @@ on:
 
 jobs:
   python-lint-and-test:
-    name: Python Lint & Pytest
+    name: Python Lint & CPU Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install Python test and lint dependencies
+      - name: Install CPU test and lint dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
@@ -32,11 +32,11 @@ jobs:
       - name: Lint with Flake8
         run: flake8
 
-      - name: Run Pytest suite
+      - name: Run full CPU unit and API test suite
         run: pytest
 
   frontend-lint-and-build:
-    name: Frontend Lint & Build
+    name: Frontend Lint & Production Build
     runs-on: ubuntu-latest
 
     defaults:

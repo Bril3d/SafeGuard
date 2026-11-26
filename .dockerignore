@@ -1,0 +1,39 @@
+.git/
+.github/
+.venv/
+.venv-backend/
+.venv-train/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Never bake secrets or local environment files into image layers
+.env
+.env.*
+!.env.example
+
+# Never bake raw/processed datasets, archives, or large weights into Docker contexts
+data/
+models/
+reports/
+mlruns/
+mlartifacts/
+mlflow.db
+runs/
+*.zip
+*.tar.gz
+*.pt
+*.pth
+*.onnx
+*.onnx.data
+*.engine
+
+# Frontend build/test artifacts rebuilt inside multi-stage Docker
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/playwright-report/
+frontend/test-results/

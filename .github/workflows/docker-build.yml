@@ -1,4 +1,4 @@
-name: Docker Build Validation
+name: Docker Build & Smoke Validation
 
 on:
   push:
@@ -8,31 +8,38 @@ on:
 
 jobs:
   docker-validate:
-    name: Validate Compose & Multi-Stage Docker Builds
+    name: Compose Config, Multi-Stage Builds & Container Smoke Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Validate docker-compose.yml
+      - name: Validate docker-compose.yml quietly
         run: docker compose config --quiet
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build backend Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: backend/Dockerfile
-          push: false
-          tags: safeguard-backend:ci
+      - name: Build and verify multi-service Docker images
+        run: docker compose build
 
-      - name: Build frontend Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: frontend/Dockerfile
-          push: false
-          tags: safeguard-frontend:ci
+      - name: Start stack and run container smoke checks
+        run: |
+          set -euo pipefail
+          docker compose up -d --no-build
+          trap 'docker compose logs; docker compose down' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/health >/dev/null \
+              && curl -fsS http://127.0.0.1:3000/ >/dev/null \
+              && curl -fsS http://127.0.0.1:5000/health >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+
+          curl -fsS http://127.0.0.1:8000/health | grep -q '"status":"ok"'
+          curl -fsS http://127.0.0.1:3000/api/health | grep -q '"status":"ok"'
+          curl -fsS http://127.0.0.1:8000/docs >/dev/null
+          curl -fsS http://127.0.0.1:5000/health >/dev/null
